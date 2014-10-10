@@ -1,4 +1,11 @@
 #include <stdio.h>
+typedef struct{
+	int day;
+	int month;
+	int year;
+	char hola[20];
+	float precio;
+}fecha;
 
 int main(){
 	int opc;
