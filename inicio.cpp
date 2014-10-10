@@ -17,6 +17,6 @@ return 0;
 
 void menu(){
 	int opc;
-	printf("Holi elije opcion\n\n1.-Holi\n\nHoli2\n");
+	printf("Holi elige opcion\n\n1.-Holi\n\nHoli2\n");
 	scanf("%d",opc);
 }
