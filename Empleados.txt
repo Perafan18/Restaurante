@@ -1,8 +1,1 @@
-1*Jorgei*Nava*Granados*23*1*1995*Masculino*Blalala*15454632*1*Jefe*nava123
-2*L*L*L*1*1*1*Masculino*1*1*1*1*1*l123
-3*Hola*Como*Estas*2*1*1994*Masculino*Las terceras*52165431*1*Gerente*hola123
-4*ale*melendez*reyes*9*3*1995*Femenino*roverdito*203820*1*chef*ale123
-5*pedro*perafan*carrasco*18*11*1996*Masculino*san luis*23421*1*jefeee*pedro123
-6*Mayra*Torres*Torres*6*4*1995*Femenino*Las sextas*5487213*1*Conserje*mayra123
-7*Gerardo*Hernandez*Lopez*6*12*1994*Masculino*Las septimas*5463211*1*Empleado*gerardo123
-8*diego*perez*gomez*23*5*1993*Masculino*Muy lejos*084387*3*Gerente general*diego123
+1*Pedro*Paramo*Carrasco*18*2*1998*Masculino*gavilan o Paloma *4443287490*1*Jefazo*123*1
