@@ -1,10 +1,2 @@
-<<<<<<< HEAD
-1*pedro*Carrasco*perafan*18*11*1995*Masculino*gavilna 817*4443287490*1*jefe*Pedro*2686108
-=======
-1*Pedro *Carrasco*Peraf n*18*11*1995*Masculino*Gavilan 817*4443287490*1*jefe*Pedro*pedro123*1
-2*Pedro*Melendez*Peraf n*23*8*1960*Masculino*Gavilan 817*00000000*1*Cocinero*Pedro*123*1
-3*Pedro*C*P*1*1*1924*Masculino*saa*1*1*J*Pedro*123*1
-4*p*p*p*1*1*1924*Masculino*Gavilan 817 *444444*1*jefe*Pedro*123*1
-5*Pedro*p*p*1*1*1990*Masculino*11*1111*1*Jefe*Pedrito*123*1
-6*jorgeee*graaa*navaaa*19*12*2013*Masculino*Muy lejos*38921*1*Ayudante*nava*123*1
->>>>>>> origin/master
+1*Pedrito*Carrasco*Peraf n*18*11*1995*Masculino*Gavilan 817*442423244414*1*Jefe*Pedro*123*0
+2*Pedro*Melendez*Peraf n*23*9*1960*Masculino*Gavilan 817*443646674*1*Cocinero*Pedro2*123*1

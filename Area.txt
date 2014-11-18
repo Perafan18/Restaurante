@@ -1,1 +1,2 @@
 1*Cocina*Donde se cocinan las cosas*1
+2*Caja*Es donde se cobran las cosas*1

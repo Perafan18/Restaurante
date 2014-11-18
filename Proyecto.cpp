@@ -198,9 +198,9 @@ void baja_empleados(FILE *arch){
 	        fscanf(arch,"%[^*]*",temporalDos.password);
 	        fscanf(arch,"%d\n",&temporalDos.habilitado);
 			if(temporalDos.id_empleado==id){
-				fprintf(erch,"%d*%s*%s*%s*%d*%d*%d*%s*%s*%s*%d*%s*%s*%d\n",temporalDos.id_empleado,temporalDos.nombre,temporalDos.apellido_m,temporalDos.apellido_p,temporalDos.day,temporalDos.month,temporalDos.year,temporalDos.sexo,temporalDos.direccion,temporalDos.telefono,temporalDos.id_area,temporalDos.puesto, temporalDos.usuario,temporalDos.password,0);
+				fprintf(erch,"%d*%s*%s*%s*%d*%d*%d*%s*%s*%s*%d*%s*%s*%s*%d\n",temporalDos.id_empleado,temporalDos.nombre,temporalDos.apellido_m,temporalDos.apellido_p,temporalDos.day,temporalDos.month,temporalDos.year,temporalDos.sexo,temporalDos.direccion,temporalDos.telefono,temporalDos.id_area,temporalDos.puesto, temporalDos.usuario,temporalDos.password,0);
 			}else{
-	        	fprintf(erch,"%d*%s*%s*%s*%d*%d*%d*%s*%s*%s*%d*%s*%s*%d\n",temporalDos.id_empleado,temporalDos.nombre,temporalDos.apellido_m,temporalDos.apellido_p,temporalDos.day,temporalDos.month,temporalDos.year,temporalDos.sexo,temporalDos.direccion,temporalDos.telefono,temporalDos.id_area,temporalDos.puesto, temporalDos.usuario,temporalDos.password,temporalDos.habilitado);
+	        	fprintf(erch,"%d*%s*%s*%s*%d*%d*%d*%s*%s*%s*%d*%s*%s*%s*%d\n",temporalDos.id_empleado,temporalDos.nombre,temporalDos.apellido_m,temporalDos.apellido_p,temporalDos.day,temporalDos.month,temporalDos.year,temporalDos.sexo,temporalDos.direccion,temporalDos.telefono,temporalDos.id_area,temporalDos.puesto, temporalDos.usuario,temporalDos.password,temporalDos.habilitado);
 	        }
 		}
 		fclose(arch);
@@ -224,7 +224,7 @@ void baja_empleados(FILE *arch){
 	        	fscanf(erch,"%[^*]*",temporalDos.usuario);
 	        	fscanf(erch,"%[^*]*",temporalDos.password);
 		        fscanf(erch,"%d\n",&temporalDos.habilitado);
-		        	fprintf(arch,"%d*%s*%s*%s*%d*%d*%d*%s*%s*%s*%d*%s*%s*%d\n",temporalDos.id_empleado,temporalDos.nombre,temporalDos.apellido_m,temporalDos.apellido_p,temporalDos.day,temporalDos.month,temporalDos.year,temporalDos.sexo,temporalDos.direccion,temporalDos.telefono,temporalDos.id_area,temporalDos.puesto,temporalDos.usuario, temporalDos.password,temporalDos.habilitado);
+		        	fprintf(arch,"%d*%s*%s*%s*%d*%d*%d*%s*%s*%s*%d*%s*%s*%s*%d\n",temporalDos.id_empleado,temporalDos.nombre,temporalDos.apellido_m,temporalDos.apellido_p,temporalDos.day,temporalDos.month,temporalDos.year,temporalDos.sexo,temporalDos.direccion,temporalDos.telefono,temporalDos.id_area,temporalDos.puesto,temporalDos.usuario, temporalDos.password,temporalDos.habilitado);
 		    
 			}
 		}
@@ -996,7 +996,7 @@ void ver_area(FILE *arch){
             fscanf(arch,"%d\n",&temp.habilitado);
             if(temp.habilitado==1){
             	cont+=1;
-				printf("%d %s %s %d\n", temp.id_area, temp.nombre, temp.desc_area, temp.habilitado);
+				printf("\tID de Area:%d\n\tNombre del Area:%s\n\tDescripcion del Area:%s\n", temp.id_area, temp.nombre, temp.desc_area, temp.habilitado);
         	}
         }
         fclose(arch);
@@ -1021,7 +1021,7 @@ void ver_receta(FILE *arch){
 	       fscanf(arch,"%d\n",&rec.habilitado);
 	       if(rec.habilitado==1){
 	       		cont+=1;
-	    		printf("\tID:%d\n\tNombre del Platillo:%s\n\tDescripcion:%s\n\tPrecio:%g\n\t",rec.id_receta,rec.nombre,rec.descripcion,rec.precio);
+	    		printf("\tID:%d\n\tNombre del Platillo:%s\n\tDescripcion:%s\n\tPrecio:%g\n",rec.id_receta,rec.nombre,rec.descripcion,rec.precio);
 	       }
 	    }
 	    fclose(arch);
@@ -1050,7 +1050,7 @@ void ver_inventario(FILE *arch){
             fscanf(arch,"%d\n",&nuevo.habilitado);
             if(nuevo.habilitado==1){
             	cont+=1;
-           	 	printf("%d %s %g %g %g %d\n\t", nuevo.id_inventario, nuevo.nombre, nuevo.peso, nuevo.costo, nuevo.cantidad, nuevo.habilitado);
+           	 	printf("\tID:%d\n\tNombre:%s\n\tPeso:%g\n\tCosto:%g\n\tCantidad:%g\n\t", nuevo.id_inventario, nuevo.nombre, nuevo.peso, nuevo.costo, nuevo.cantidad, nuevo.habilitado);
         	}
         }
         fclose(arch);
@@ -1133,26 +1133,24 @@ void modificar_empleado(FILE *arch){
 		}while(verificar(emp.apellido_m)!=1);
     
 	printf("Fecha de Nacimiento\n");
-	do{
+    do{ //validacion de dias, mes y año
 			printf("Dia: ");
 			fflush(stdin);
-			resultado = scanf("%d", &emp.day);
-			if(resultado!=1){
-				printf("Solo ingrese numeros\n\t");
+			scanf("%d", &emp.day);
+			if(emp.day<0 || emp.day>31){
+				printf("\tDia Invalido\n");
 			}
-			if(emp.day<0 || emp.day>32)
-			printf("\tDia Invalido\n");
-		}while(emp.day<0 || emp.day>32 || resultado !=1);
-		resultado=0;
+		}while(emp.day<0 || emp.day>31);
+          
 	do{
 			printf("Mes: ");
 			fflush(stdin);
 			resultado = scanf("%d", &emp.month);
 			if(resultado!=1){
-				printf("Solo ingrese numeros\n\t");
+				printf("Solo ingrese numeros");
 			}
 			if(emp.month<0 || emp.month>12)
-			printf("\tMes Invalido\n\t");
+			printf("\tMes Invalido\n");
 		}while(emp.month<0 || emp.month>12 || resultado !=1);
     
 	do{
@@ -1160,9 +1158,9 @@ void modificar_empleado(FILE *arch){
 			fflush(stdin);
 			scanf("%d", &emp.year);
 			if(emp.year<1924){
-				printf("A\xA4o Invalido, a\xA4o minimo 1924\n\t");
+				printf("A\xA4o Invalido, a\xA4o minimo 1924\n\n");
 			}else if(emp.year>2014){
-				printf("A\xA4o Invalido , a\xA4o maximo 2014\n\t");
+				printf("A\xA4o Invalido , a\xA4o maximo 2014\n\n");
 			}
 		}while(emp.year<1924||emp.year>2014);
               
@@ -1892,7 +1890,7 @@ void menu_principal_emp(FILE *arch,  int * sesion){
                                       registro_receta(arch);
                                       break;
                                  case 2:
-                                      printf("\n\t**Ver Receta**\n\t");
+                                      printf("\n\t**Ver Receta**\n");
                                       ver_receta(arch);
                                       break;
                                  case 3:
