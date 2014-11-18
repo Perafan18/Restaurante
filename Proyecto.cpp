@@ -341,6 +341,7 @@ system("cls");
      //fputs("**Registro de Empleados**\n",arch);
      //fputs("ID Nom   \tAp_Pat\t   Ap_Mat\t\t Fecha_Nac\t\t Genero\t\t Direccion\t Telefono  Nomina  Puesto\n",arch); //Acomodo en el archivo
 	emp.id_empleado = 0;
+	tempo.id_empleado =0;
 	if(!(arch = fopen("Area.txt","r+"))){
 		printf("Para ingresar usuarios primero tienes que ingresar las areas\n");
 		system("pause");
@@ -399,11 +400,14 @@ system("cls");
 		do{ //validacion de dias, mes y año
 			printf("Dia: ");
 			fflush(stdin);
-			scanf("%d", &emp.day);
+			resultado =  scanf("%d", &emp.day);
+			if(resultado!=1){
+				printf("Solo ingrese numeros\n");
+			}
 			if(emp.day<0 || emp.day>31){
 				printf("\tDia Invalido\n");
 			}
-		}while(emp.day<0 || emp.day>31);
+		}while(emp.day<0 || emp.day>31 || resultado !=1);
 		fprintf(arch,"%d",emp.day);
 		fputc('*',arch);
           
@@ -412,7 +416,7 @@ system("cls");
 			fflush(stdin);
 			resultado = scanf("%d", &emp.month);
 			if(resultado!=1){
-				printf("Solo ingrese numeros");
+				printf("Solo ingrese numeros\n");
 			}
 			if(emp.month<0 || emp.month>12)
 			printf("\tMes Invalido\n");
@@ -523,7 +527,7 @@ system("cls");
 			}while(verificar_direccion(emp.usuario)!=1);
 			correcto=1;
 			if(irch=fopen("Empleados.txt","r+")){
-				while(feof(irch)){
+				while(!feof(irch)){
 					fscanf(irch,"%d*",&temporalDos.id_empleado);
 			        fscanf(irch,"%[^*]*",&temporalDos.nombre);
 			        fscanf(irch,"%[^*]*",&temporalDos.apellido_p);
@@ -540,11 +544,12 @@ system("cls");
 			        fscanf(irch,"%[^*]*",&temporalDos.password);
 			        fscanf(irch,"%d\n",&temporalDos.habilitado);
 			        if(temporalDos.habilitado==1){
-			        	if(temporalDos.usuario==emp.usuario){
+			        	if(strcmp(temporalDos.usuario,emp.usuario)==0){
 			        		correcto=2;
 			        	}
 			        }
 				}
+				fclose(irch);
 			}
 			
 			if(correcto==2)
@@ -572,6 +577,7 @@ system("cls");
 
 //REGISTRO DE INVENTARIO//
 void registro_inventario(){
+	 printf("***************Nuevo Producto (INVENTARIO)***************\n");
      FILE *arch;
      inventario nuevo;
      nuevo.id_inventario =0;
@@ -585,20 +591,29 @@ void registro_inventario(){
             fscanf(arch,"%d\n",&nuevo.habilitado);
         }
      }
-    printf("Nuevo Producto\n");
+   
     nuevo.id_inventario+=1;
     nuevo.habilitado=0;
+    do{
     printf("Nombre : ");
     fflush(stdin);
     gets(nuevo.nombre);
+	}while(verificar(nuevo.nombre)!=1);
+	
+	do{
     printf("Peso : ");
-    scanf("%f",&nuevo.peso);
+    fflush(stdin);
+	}while(scanf("%f",&nuevo.peso)==0);
+	
+	do{
     printf("Costo : ");
-    scanf("%f",&nuevo.costo); 
+    fflush(stdin);
+    }while(scanf("%f",&nuevo.costo)==0); 
+    
+    do{
     printf("Cantidad : ");
-    scanf("%f",&nuevo.cantidad);
-    printf("Habilitado 1. Si 0. No: ");
-    	scanf("%d", &nuevo.habilitado);
+    fflush(stdin);
+    }while(scanf("%f",&nuevo.cantidad)==0);
     
     if(arch = fopen("Inventario.txt","a+")){
             fprintf(arch,"%d*",nuevo.id_inventario);
@@ -606,7 +621,7 @@ void registro_inventario(){
             fprintf(arch,"%f*",nuevo.peso);
             fprintf(arch,"%f*",nuevo.costo);
             fprintf(arch,"%f*",nuevo.cantidad);
-            fprintf(arch,"%d\n",nuevo.habilitado);
+            fprintf(arch,"%d\n",1);
     }
     fclose(arch);
 }
@@ -706,10 +721,10 @@ void registro_receta(FILE *arch){
     fputc('*',arch);
 
     do{
-    printf("Elige un ingrediente del inventario por ID\n");
+
 	    if(erch = fopen("Inventario.txt","r+")){
 	        while(!feof(erch)){
-	        	printf("Hola1");
+
 	         fscanf(erch,"%d*",&temp.id_inventario);
 	         fscanf(erch,"%[^*]*",temp.nombre);
 	         fscanf(erch,"%f*",&temp.peso);
@@ -717,10 +732,10 @@ void registro_receta(FILE *arch){
 	         fscanf(erch,"%f*",&temp.cantidad);
 	         fscanf(erch,"%d\n",&temp.habilitado);
 	             if(temp.habilitado==1){
-	             	printf("Hola2");
+
 	             	correctoDos=1;
 	             	if(irch = fopen("Receta_Inventario.txt","r+")){
-	             		printf("Hola3");
+
 	             		while(!feof(irch)){
 	             			fscanf(irch,"%d*",&id);
 					        fscanf(irch,"%d*",&ingrediente);
@@ -752,6 +767,7 @@ void registro_receta(FILE *arch){
 	        fclose(erch);
 	        do{
 	        correcto=2;
+	        printf("Elige un ingrediente del inventario por ID\n");
 	        fflush(stdin);
 	        scanf("%d",&ingrediente);
 		        erch = fopen("Inventario.txt","r+");
@@ -784,8 +800,11 @@ void registro_receta(FILE *arch){
 	        fprintf(irch,"%f*\n",porciones);
 	        fclose(irch);
 	        
+	        do{
 	        printf("Desea Agregar un nuevo Ingrediente\n1.-SI\n2.-NO\n\n");
 	        scanf("%d",&continuar);
+	    	}while(continuar!=1&&continuar!=2);	
+	    	
 	    }else{
 	    	printf("\nNo hay nada en el inventario\nprimero tiene que agregar algo\n");
 	    	registro_inventario();
