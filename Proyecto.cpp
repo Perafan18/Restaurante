@@ -1034,24 +1034,26 @@ void modificar_empleado(FILE *arch){
 		}while(verificar(emp.apellido_m)!=1);
     
 	printf("Fecha de Nacimiento\n");
-    do{ //validacion de dias, mes y año
+	do{
 			printf("Dia: ");
 			fflush(stdin);
-			scanf("%d", &emp.day);
-			if(emp.day<0 || emp.day>31){
-				printf("\tDia Invalido\n");
+			resultado = scanf("%d", &emp.day);
+			if(resultado!=1){
+				printf("Solo ingrese numeros\n\t");
 			}
-		}while(emp.day<0 || emp.day>31);
-          
+			if(emp.day<0 || emp.day>32)
+			printf("\tDia Invalido\n");
+		}while(emp.day<0 || emp.day>32 || resultado !=1);
+		resultado=0;
 	do{
 			printf("Mes: ");
 			fflush(stdin);
 			resultado = scanf("%d", &emp.month);
 			if(resultado!=1){
-				printf("Solo ingrese numeros");
+				printf("Solo ingrese numeros\n\t");
 			}
 			if(emp.month<0 || emp.month>12)
-			printf("\tMes Invalido\n");
+			printf("\tMes Invalido\n\t");
 		}while(emp.month<0 || emp.month>12 || resultado !=1);
     
 	do{
@@ -1059,9 +1061,9 @@ void modificar_empleado(FILE *arch){
 			fflush(stdin);
 			scanf("%d", &emp.year);
 			if(emp.year<1924){
-				printf("A\xA4o Invalido, a\xA4o minimo 1924\n\n");
+				printf("A\xA4o Invalido, a\xA4o minimo 1924\n\t");
 			}else if(emp.year>2014){
-				printf("A\xA4o Invalido , a\xA4o maximo 2014\n\n");
+				printf("A\xA4o Invalido , a\xA4o maximo 2014\n\t");
 			}
 		}while(emp.year<1924||emp.year>2014);
               

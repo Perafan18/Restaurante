@@ -3,3 +3,4 @@
 3*Pedro*P*C*1*1*1924*Masculino*saa*1*1*J*Pedro*123*1
 4*p*p*p*1*1*1924*Masculino*Gavilan 817 *444444*1*jefe*Pedro*123*1
 5*Pedro*p*p*1*1*1990*Masculino*11*1111*1*Jefe*Pedrito*123*1
+6*jorgeee*navaaa*graaa*19*12*2013*Masculino*Muy lejos*38921*1*Ayudante*nava*123*1
