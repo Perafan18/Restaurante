@@ -14,6 +14,7 @@ typedef struct{//Tabla de Empleado
         int no_nomina;
         int id_area;
         char puesto[20];
+        char usuario[20];
         char password[20];//password deifinida por el administrador
         int habilitado; //habilitado o deshabilitado
 }empleado;
@@ -201,7 +202,54 @@ void baja_recetas(FILE *arch){
 ////*************************REGISTROS*****************************************////////
      
      
+//REGISTRO DE AREA//
+void registro_area(){
+     FILE *arch;
+     area agregar;
+     area temp;
+     temp.id_area =0;
+     if(arch = fopen("Area.txt","r+")){
+        while(!feof(arch)){
+            fscanf(arch,"%d*",&temp.id_area);
+            fscanf(arch,"%[^*]*",temp.nombre);
+            fscanf(arch,"%[^*]*",temp.desc_area);
+            fscanf(arch,"%d\n",&temp.habilitado);
+        }
+     }
      
+     printf("ID de Area : %d\n",temp.id_area+1);
+     agregar.id_area = temp.id_area+1;
+     do{
+	 printf("Nombre del area: ");
+     fflush(stdin);
+     gets(agregar.nombre);
+ 	}while(verificar(agregar.nombre)!=1);
+ 	
+ 	do{
+	 printf("Descripcion del area:\n");
+     fflush(stdin);
+     gets(agregar.desc_area);
+ 	}while(verificar(agregar.desc_area)!=1);
+ 	
+	 printf("--Estado del area--\n");
+     printf("\t1.- Habilitado\n\t2.- Deshabilitado\n");
+     fflush(stdin);
+     scanf("%d",&agregar.habilitado);
+         if(arch = fopen("Area.txt","a+")){//archivo de area
+            fprintf(arch,"%d",agregar.id_area);
+            fputc('*',arch);
+            fprintf(arch,"%s",agregar.nombre);
+            fputc('*',arch);
+            fprintf(arch,"%s",agregar.desc_area);
+            fputc('*',arch);
+            fprintf(arch,"%d",agregar.habilitado);
+            fputc('\n',arch);
+            printf("Guardado en el archivo\n");
+         }else{
+            printf("Error al abrir el archivo\n");
+         }
+        fclose(arch);
+}     
      
 ///REGISTRO DE EMPLEADOS////
 void registro(FILE *arch){ //manejo de archivos
@@ -214,6 +262,11 @@ system("cls");
      //fputs("**Registro de Empleados**\n",arch);
      //fputs("ID Nom   \tAp_Pat\t   Ap_Mat\t\t Fecha_Nac\t\t Genero\t\t Direccion\t Telefono  Nomina  Puesto\n",arch); //Acomodo en el archivo
 	emp.id_empleado = 0;
+	if(!(arch = fopen("Area.txt","r+"))){
+		printf("Ahhhh No existe este archvio, primero agrega un area\n");
+		system("pause");
+		registro_area();
+	}
 	if(arch = fopen("Empleados.txt","r+")){
 		while(!feof(arch)){
 	        fscanf(arch,"%d*",&tempo.id_empleado);
@@ -232,7 +285,6 @@ system("cls");
 		}
 	}
 	arch=fopen("Empleados.txt","a+"); //archivo de empleado
-    irch=fopen("Emp.txt", "a+");
 	emp.id_empleado = tempo.id_empleado +1;
 	fprintf(arch,"%d*",emp.id_empleado);
 
@@ -245,8 +297,6 @@ system("cls");
 		}while(verificar(emp.nombre)!=1);
 		
 		fputs(emp.nombre, arch);
-		fputs(emp.nombre, irch);
-		fputc('*',irch);
 		fputc('*',arch);
         
 		do{   
@@ -341,69 +391,28 @@ system("cls");
 		scanf("%d",&emp.id_area);
 		fprintf(arch,"%d",emp.id_area);
 		fputc('*',arch);
-		
+		do{
 		printf("Puesto: ");
 		fflush(stdin);
-		gets(emp.puesto);
+		gets(emp.puesto);		
+		}while(verificar(emp.puesto)!=1);
+		
 		fputs(emp.puesto, arch);
 		fputc('*',arch);
-
+		
 		printf("Password: ");
 		fflush(stdin);
 		gets(emp.password);
 		fputs(emp.password, arch);
-		fputs(emp.password, irch);
-		
+
 		fputs("*1",arch);
-		
 		fputc('\n',arch);
-		fputc('\n',irch);
 		
         
         fclose(arch);
         fclose(irch);
 }
-//REGISTRO DE AREA//
-void registro_area(){
-     FILE *arch;
-     area agregar;
-     area temp;
-     temp.id_area =0;
-     if(arch = fopen("Area.txt","r+")){
-        while(!feof(arch)){
-            fscanf(arch,"%d*",&temp.id_area);
-            fscanf(arch,"%[^*]*",temp.nombre);
-            fscanf(arch,"%[^*]*",temp.desc_area);
-            fscanf(arch,"%d\n",&temp.habilitado);
-        }
-     }
-     printf("ID de Area : %d\n",temp.id_area+1);
-     agregar.id_area = temp.id_area+1;
-     printf("Nombre del area: ");
-     fflush(stdin);
-     gets(agregar.nombre);
-     printf("Descripcion del area:\n");
-     fflush(stdin);
-     gets(agregar.desc_area);
-     printf("--Estado del area--\n");
-     printf("\t1.- Habilitado\n\t2.- Deshabilitado\n");
-     fflush(stdin);
-     scanf("%d",&agregar.habilitado);
-         if(arch = fopen("Area.txt","a+")){//archivo de area
-            fprintf(arch,"%d",agregar.id_area);
-            fputc('*',arch);
-            fprintf(arch,"%s",agregar.nombre);
-            fputc('*',arch);
-            fprintf(arch,"%s",agregar.desc_area);
-            fputc('*',arch);
-            fprintf(arch,"%d",agregar.habilitado);
-            fputc('\n',arch);
-            printf("Guardado en el archivo\n");
-         }else{
-            printf("Error al abrir el archivo\n");
-         }
-        fclose(arch);
-}
+
 //REGISTRO DE INVENTARIO//
 void registro_inventario(){
      FILE *arch;
@@ -592,11 +601,10 @@ void ver_empleado(FILE *arch){
     char area[30];
     int cont=0;
     FILE *erch;
-    printf("Holi1");
+    
     if(arch = fopen("Empleados.txt","r+")){
-    printf("Holi2");
+    	
 	while(!feof(arch)){
-		printf("Holi3");
         fscanf(arch,"%d*",&temporal.id_empleado);
         fscanf(arch,"%[^*]*",&temporal.nombre);
         fscanf(arch,"%[^*]*",&temporal.apellido_p);
@@ -624,7 +632,6 @@ void ver_empleado(FILE *arch){
         }
         if(temporal.habilitado==1){
         	cont+=1;
-        	printf("Holi4");
 	        printf("\tID: %d \n\tNombre :%s %s %s\n\tFecha de Nacimiento: %d %d %d\n\tSexo: %s\n\tDireccion: %s\n\tTelefono: %s \n\tArea: %s\n\tPuesto: %s\n\tPassword: %s\n\n",temporal.id_empleado,temporal.nombre,temporal.apellido_p,temporal.apellido_m,temporal.day,temporal.month,temporal.year,temporal.sexo,temporal.direccion,temporal.telefono,area,temporal.puesto,temporal.password);
         }
     }
@@ -647,7 +654,7 @@ void ver_area(FILE *arch){
             fscanf(arch,"%[^*]*",temp.nombre);
             fscanf(arch,"%[^*]*",temp.desc_area);
             fscanf(arch,"%d\n",&temp.habilitado);
-            if(temp.habilitado){
+            if(temp.habilitado==1){
             	cont+=1;
 				printf("%d %s %s %d\n", temp.id_area, temp.nombre, temp.desc_area, temp.habilitado);
         	}
@@ -1505,6 +1512,8 @@ void inicio_sesion(FILE *arch, FILE *erch, int * sesion){
      char usuarioadmin[20],passadmin[20],usuarioemp[20], passemp[20],emp[20], pswe[20],adm[20],pw[20],hola[10]="hola";
      int tipo;
      char * n;
+     empleado temporalDos;
+     
      printf("Elegir tipo de usuario:\n1.-Administrador.\n2.-Empleado.\n"); //opcion para entrar Administrador o Usuario
      fflush(stdin);
 	 scanf("%d",&tipo);
@@ -1550,36 +1559,57 @@ void inicio_sesion(FILE *arch, FILE *erch, int * sesion){
      }else{
      	
 	  	if(tipo==2){ //usuario tipo 2 es empleado
-			erch=fopen("Emp.txt","r+");  //abre el archivo de Administrador
-         	if(arch==NULL){   //si el archivo esta vacio significa que entra por primera vez y se le da un nombre y contraseña predeterminadas
-            	 fflush(stdin);
-             	printf("Los empleados aun no estan autorizados para entrar\n");
-            	*sesion = 2;  //puntero que indica que tipo de persona es, Administrador o Usuario
-         	}else{
-            	do{ 
-					*sesion = 2;   //si no se entra por primera vez  se le pide que se registre
-                	printf("Ingresa tu usuario: ");
-                	fflush(stdin);
-                	gets(usuarioemp);
-                	printf("Ingresa tu contrase%ca: ",164);
-                	fflush(stdin);
-                	gets(passemp);
-                	
-                	if(erch==NULL){
-                    	printf("Error! \n");
-                    	system("pause");
-                    	inicio_sesion(arch,erch,&(*sesion)); //si el archivo esta vacio regresa a la funcion inicio_sesion
-                	}else{
-                    	fscanf(erch,"%s*",emp);
-                    	fscanf(erch,"%s",pswe);
-                	}
-                	if((strcmp(usuarioemp,emp)!=0)||(strcmp(passemp,pswe)!=0)){
-                    	printf("Usuario y/o Contrasena Incorrectos\n\n");
-                	}	
-        		}while((strcmp(usuarioemp,emp)!=0)||(strcmp(passemp,pswe)!=0));
-        			printf("Bienvenido!!\n");
-        		 menu_principal_emp(arch,&(*sesion));	
-	     	}		
+			if(erch=fopen("Empleados.txt","r+")){  //abre el archivo de Administrador
+	         	if(arch==NULL){   //si el archivo esta vacio significa que entra por primera vez y se le da un nombre y contraseña predeterminadas
+	            	 fflush(stdin);
+	             	printf("Los empleados aun no estan autorizados para entrar\n");
+	            	*sesion = 2;  //puntero que indica que tipo de persona es, Administrador o Usuario
+	         	}else{
+	            	do{ 
+						*sesion = 2;   //si no se entra por primera vez  se le pide que se registre
+	                	do{
+						printf("Ingresa tu usuario: ");
+	                	fflush(stdin);
+	                	gets(usuarioemp);
+	                	}while(verificar(usuarioemp)!=1);
+						
+						do{
+						printf("Ingresa tu contrase%ca: ",164);
+	                	fflush(stdin);
+	                	gets(passemp);
+	                	}while(verificar(passemp)!=1);
+	                	
+	                	if(erch==NULL){
+	                    	printf("Error! \n");
+	                    	system("pause");
+	                    	inicio_sesion(arch,erch,&(*sesion)); //si el archivo esta vacio regresa a la funcion inicio_sesion
+	                	}else{    		
+							fscanf(erch,"%d*",&temporalDos.id_empleado);
+					        fscanf(erch,"%[^*]*",temporalDos.nombre);
+					        fscanf(erch,"%[^*]*",temporalDos.apellido_p);
+					        fscanf(erch,"%[^*]*",temporalDos.apellido_m);
+					        fscanf(erch,"%d*",&temporalDos.day);
+					        fscanf(erch,"%d*",&temporalDos.month);
+					        fscanf(erch,"%d*",&temporalDos.year);
+					        fscanf(erch,"%[^*]*",temporalDos.sexo);
+					        fscanf(erch,"%[^*]*",temporalDos.direccion);
+					        fscanf(erch,"%[^*]*",temporalDos.telefono);
+					        fscanf(erch,"%d*",&temporalDos.id_area);
+					        fscanf(erch,"%[^*]*",&temporalDos.puesto);
+					        fscanf(erch,"%[^*]*",&temporalDos.usuario);
+							fscanf(erch,"%[^*]*",&temporalDos.password);
+					        fscanf(erch,"%d\n",&temporalDos.habilitado);
+	                	}
+	                	if((strcmp(usuarioemp,emp)!=0)||(strcmp(passemp,temporalDos.password)!=0)){
+	                    	printf("Usuario y/o Contrasena Incorrectos\n\n");
+	                	}	
+	        		}while((strcmp(usuarioemp,emp)!=0)||(strcmp(passemp,pswe)!=0));
+	        			printf("Bienvenido!!\n");
+	        		 menu_principal_emp(arch,&(*sesion));	
+	     		}
+			}else{
+				printf("Primero tienes que agregar usuarios como Administrador");
+			}
 		 }else{
 		printf("Error! \nIntenta otra opcion\n");
 		system("pause");
