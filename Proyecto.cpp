@@ -636,16 +636,39 @@ void registro_inventario(){
 void registro_orden(FILE *arch){
 	FILE *erch,*irch;
 	orden ord, tempo;
-	int continuar,resultado;
+	int continuar,resultado,opcion,seguir;
+	detalle_orden temporal;
+	receta rec;
 	system("cls");
 	do{
-	printf("\tBienvenido  ¿puedo tomar su orden ?\t1.-Si\n\t2.-No\n\t");
+	printf("\tBienvenido , puedo tomar su orden ?\n\t1.-Si\n\t2.-No\n\t");
 	}while(scanf("%d",&continuar)==0||(continuar!=1&&continuar!=2));
 	if(continuar==1){
+		do{
 		
 		tempo.id_orden = 0;
 		ord.id_orden=0;
-		 
+		temporal.id_detalle_orden=0;
+		if(erch=fopen("Orden_detalle.txt","r+")){
+			while(!feof(erch)){
+				fscanf(erch,"%d*",&temporal.id_detalle_orden);
+				fscanf(erch,"%d*",&temporal.id_orden);
+				fscanf(erch,"%d\n",&temporal.id_receta);
+			}
+			fclose(erch);
+		}
+		temporal.id_detalle_orden+=1;
+		erch = fopen("Orden_detalle.txt","a+"); 
+		
+		printf("Menu\n");
+		ver_receta(&(*irch));
+		do{
+		printf("Elige mediante ID: ");
+		resultado = scanf("%d",&opcion);	
+		}while(resultado==0||opcion==0);
+		fprintf(erch,"%d*",temporal.id_detalle_orden);
+		fprintf(erch,"%d*",opcion);
+		
 		if(arch=fopen("Orden.txt","r+")){ //archivo de Orden
 			while(!feof(arch)){
 				fscanf(arch,"%d*",&tempo.id_orden);
@@ -665,6 +688,7 @@ void registro_orden(FILE *arch){
 		ord.id_orden= tempo.id_orden+1;
 		
 		fprintf(arch,"%d*",ord.id_orden);
+		fprintf(erch,"%d\n",ord.id_orden);
 		printf("Fecha de la orden \n");
 		
 		do{ //validacion de dias, mes y año
@@ -720,15 +744,33 @@ void registro_orden(FILE *arch){
 		fputs(ord.detalles, arch);
 		fputc('*',arch);
 		
-		printf("Total: ");
-		scanf("%f", &ord.total);
-		fprintf(arch,"%f",ord.total);
-		fputc('*',arch);
+		if(erch = fopen("Receta.txt","r+")){
+		    while(!feof(erch)){
+		    	fscanf(erch,"%d*",&rec.id_receta);
+		       fscanf(erch,"%[^*]*",&rec.nombre);
+		       fscanf(erch,"%[^*]*",&rec.descripcion);
+		       fscanf(erch,"%f*",&rec.precio);
+		       fscanf(erch,"%d\n",&rec.habilitado);
+		       if(rec.habilitado==1){
+		       		if(rec.id_receta==opcion){
+		       			fprintf(arch,"%f",rec.precio);
+						fputc('*',arch);
+					}
+		    			
+		       }
+		    }
+		    fclose(arch);
+		}
+
 	
 		fprintf(arch,"%d",1);
 		fputc('\n',arch);
 		fclose(arch);
-
+		do{
+		printf("Desea seguir ordenando\n1.-Si\n2.-No\n");
+		}while(scanf("%d",&seguir)==0||(seguir!=1&&seguir!=2));
+		
+		}while(seguir==1);
 	}else{
 		printf("\n\tEntonces volvere más tarde..\n");
 	}
@@ -800,10 +842,10 @@ void registro_receta(FILE *arch){
 	             			printf("ID: %d\nNombre: %s\n\n",temp.id_inventario,temp.nombre);
 	             		}
 						 fclose(irch);
-						 if(cont==0){
-				        	printf("\nYa se agregaron todos los elementos posibles a la receta\n");
-				    		cont=2;
-				        }
+						 //if(cont==0){
+				        //	printf("\nYa se agregaron todos los elementos posibles a la receta\n");
+				    	//	cont=2;
+				        //}
 	             	}else{
 	             		cont+=1;
 	             		printf("ID: %d\nNombre: %s\n\n",temp.id_inventario,temp.nombre);
@@ -850,7 +892,7 @@ void registro_receta(FILE *arch){
 		        irch = fopen("Receta_Inventario.txt","a+");
 		        fprintf(irch,"%d*",rec.id_receta);
 		        fprintf(irch,"%d*",ingrediente);
-		        fprintf(irch,"%f*\n",porciones);
+		        fprintf(irch,"%f\n",porciones);
 		        fclose(irch);
 		        
 		        do{
@@ -977,7 +1019,7 @@ void ver_receta(FILE *arch){
 	       fscanf(arch,"%d\n",&rec.habilitado);
 	       if(rec.habilitado==1){
 	       		cont+=1;
-	    		printf("%d %s %s %f %d\n\t",rec.id_receta,rec.nombre,rec.descripcion,rec.precio,rec.habilitado);
+	    		printf("\tID:%d\n\tNombre del Platillo:%s\n\tDescripcion:%s\n\tPrecio:%g\n\t",rec.id_receta,rec.nombre,rec.descripcion,rec.precio);
 	       }
 	    }
 	    fclose(arch);
@@ -1039,7 +1081,7 @@ void ver_orden(FILE *arch){
 	    }
 	    fclose(arch);
 	    if(cont==0){
-    		printf("\tUpps! No hay recetas!\n");
+    		printf("\tUpps! No hay ordenes!\n");
     	}
 	}else{
 		printf("\tNo existe el archivo, primero  tienes que registrar a alguna orden\n");
