@@ -56,6 +56,43 @@ typedef struct{//Tabla de receta
         int id_receta;//id de receta
         int id_orden;//id de orden
 }detalle_orden;
+
+void inicio_sesion(FILE *arch, FILE *erch, int * sesion);
+void menu_principal_emp(FILE *arch,  int * sesion);
+void menu_principal(FILE *arch,  int * sesion);
+void modificar_area(FILE *arch);
+void modificar_inventario(FILE *arch);
+void modificar_orden(FILE *arch);
+void modificar_receta(FILE *arch);
+void modificar_empleado(FILE *arch);
+void ver_orden(FILE *arch);
+void ver_inventario(FILE *arch);
+void ver_receta(FILE *arch);
+void ver_area(FILE *arch);
+void ver_empleado(FILE *arch);
+void registro_receta(FILE *arch);
+void registro_orden(FILE *arch);
+void registro_inventario();
+void registro(FILE *arch);
+void registro_area();
+void baja_recetas(FILE *arch);
+void baja_empleados(FILE *arch);
+int verificar_numero(int numero);
+int verificar(char string[]);
+void portada();
+int verificar_direccion(char string[]);
+
+main(){
+		FILE *arch;
+		FILE *erch;
+       int sesion,continuar;
+       portada();
+       	sesion=0;
+       inicio_sesion(arch, erch, &sesion);
+//       printf("1.-Seguir\n2.-Salir\n");
+//       fflush(stdin);
+//       scanf("%d",&continuar);
+}
 //PORTADA DE INICIO
 void portada(){
      printf("\n\t\t\t****** Proyecto Final******\n\n\n\t\t>>RESTAURANTE>>\n\n\t\tUniversidad Politecnica de San Luis Potosi\n\n\n\t\tIntegrantes:\n\n\t\tPedro Perafan Carrasco\n\t\tJorgei Nava Granados\n\t\tAlejandra Melendez Reyes\n\n\t\tProgramacion 2\n\n");
@@ -84,6 +121,44 @@ int verificar(char string[]){
 		}
 	}
 }
+int verificar_telefono(char string[]){
+	int num = strlen(string);
+	
+	if(strchr(string,'*')>0){
+		printf("Telefono no valido , no uses * (asterisco)\n\n");
+		return 2;
+	}else{
+		if(strlen(string)==0){
+			printf("Longuitud minima es de un caracter\n\n");
+			return 3;
+		}else{
+			for(int i=0;i<num;i++){
+				if(string[i]=='0'||string[i]=='1'||string[i]=='2'||string[i]=='3'||string[i]=='4'||string[i]=='5'||string[i]=='6'||string[i]=='7'||string[i]=='8'||string[i]=='9'){
+					
+				}else{
+					printf("Solo son permitidos los numeros\n");
+					return 4;
+				}
+			}
+			return 1;
+		}
+	}
+}
+int verificar_direccion(char string[]){
+	int num = strlen(string);
+	if(strchr(string,'*')>0){
+		printf("Direccion no valida , no uses * (asterisco)\n\n");
+		return 2;
+	}else{
+		if(strlen(string)==0){
+			printf("Longuitud minima es de un caracter\n\n");
+			return 3;
+		}else{
+			return 1;
+		}
+	}
+}
+
 int verificar_numero(int numero){
 	char numeros[10] = {'1','2','3','4','5','6','7','8','9','0'};
 	char string[30];
@@ -98,10 +173,11 @@ void baja_empleados(FILE *arch){
 	FILE *erch;
 	int id;
 	empleado temporalDos;
-	printf("Dame el ID del usuario\n");
-	scanf("%d",&id);
-	
 	if(arch = fopen("Empleados.txt","r+")){
+		ver_empleado(&(*arch));
+		printf("Dame el ID del usuario\n");
+		scanf("%d",&id);
+		
 		erch = fopen("EmpleadosTemp.txt","w");
 		while(!feof(arch)){
 			
@@ -125,34 +201,40 @@ void baja_empleados(FILE *arch){
 	        	fprintf(erch,"%d*%s*%s*%s*%d*%d*%d*%s*%s*%s*%d*%s*%s*%d\n",temporalDos.id_empleado,temporalDos.nombre,temporalDos.apellido_m,temporalDos.apellido_p,temporalDos.day,temporalDos.month,temporalDos.year,temporalDos.sexo,temporalDos.direccion,temporalDos.telefono,temporalDos.id_area,temporalDos.puesto, temporalDos.password,temporalDos.habilitado);
 	        }
 		}
-	}
-	fclose(arch);
-	fclose(erch);
+		fclose(arch);
+		fclose(erch);
 		//DE REGRESO :D
-	if(erch = fopen("EmpleadosTemp.txt","r+")){
-		arch = fopen("Empleados.txt","w");
-		while(!feof(erch)){
-			fscanf(erch,"%d*",&temporalDos.id_empleado);
-	        fscanf(erch,"%[^*]*",temporalDos.nombre);
-	        fscanf(erch,"%[^*]*",temporalDos.apellido_p);
-	        fscanf(erch,"%[^*]*",temporalDos.apellido_m);
-	        fscanf(erch,"%d*",&temporalDos.day);
-	        fscanf(erch,"%d*",&temporalDos.month);
-	        fscanf(erch,"%d*",&temporalDos.year);
-	        fscanf(erch,"%[^*]*",temporalDos.sexo);
-	        fscanf(erch,"%[^*]*",temporalDos.direccion);
-	        fscanf(erch,"%[^*]*",temporalDos.telefono);
-	        fscanf(erch,"%d*",&temporalDos.id_area);
-	        fscanf(erch,"%[^*]*",&temporalDos.puesto);
-	        fscanf(erch,"%[^*]*",&temporalDos.password);
-	        fscanf(erch,"%d\n",&temporalDos.habilitado);
-	        	fprintf(arch,"%d*%s*%s*%s*%d*%d*%d*%s*%s*%s*%d*%s*%s*%d\n",temporalDos.id_empleado,temporalDos.nombre,temporalDos.apellido_m,temporalDos.apellido_p,temporalDos.day,temporalDos.month,temporalDos.year,temporalDos.sexo,temporalDos.direccion,temporalDos.telefono,temporalDos.id_area,temporalDos.puesto, temporalDos.password,temporalDos.habilitado);
-	    
+		if(erch = fopen("EmpleadosTemp.txt","r+")){
+			arch = fopen("Empleados.txt","w");
+			while(!feof(erch)){
+				fscanf(erch,"%d*",&temporalDos.id_empleado);
+		        fscanf(erch,"%[^*]*",temporalDos.nombre);
+		        fscanf(erch,"%[^*]*",temporalDos.apellido_p);
+		        fscanf(erch,"%[^*]*",temporalDos.apellido_m);
+		        fscanf(erch,"%d*",&temporalDos.day);
+		        fscanf(erch,"%d*",&temporalDos.month);
+		        fscanf(erch,"%d*",&temporalDos.year);
+		        fscanf(erch,"%[^*]*",temporalDos.sexo);
+		        fscanf(erch,"%[^*]*",temporalDos.direccion);
+		        fscanf(erch,"%[^*]*",temporalDos.telefono);
+		        fscanf(erch,"%d*",&temporalDos.id_area);
+		        fscanf(erch,"%[^*]*",&temporalDos.puesto);
+		        fscanf(erch,"%[^*]*",&temporalDos.password);
+		        fscanf(erch,"%d\n",&temporalDos.habilitado);
+		        	fprintf(arch,"%d*%s*%s*%s*%d*%d*%d*%s*%s*%s*%d*%s*%s*%d\n",temporalDos.id_empleado,temporalDos.nombre,temporalDos.apellido_m,temporalDos.apellido_p,temporalDos.day,temporalDos.month,temporalDos.year,temporalDos.sexo,temporalDos.direccion,temporalDos.telefono,temporalDos.id_area,temporalDos.puesto, temporalDos.password,temporalDos.habilitado);
+		    
+			}
 		}
+		
+		fclose(arch);
+		fclose(erch);
+	}else{
+	printf("\tPara dar de baja un empleado primero tienes que tener registrado alguno (EL archivo no existe)\n");
+	system("pause");
+	registro(&(*arch));
 	}
-	
-	fclose(arch);
-	fclose(erch);
+
+		
 }
 
 
@@ -231,10 +313,7 @@ void registro_area(){
      gets(agregar.desc_area);
  	}while(verificar(agregar.desc_area)!=1);
  	
-	 printf("--Estado del area--\n");
-     printf("\t1.- Habilitado\n\t2.- Deshabilitado\n");
-     fflush(stdin);
-     scanf("%d",&agregar.habilitado);
+
          if(arch = fopen("Area.txt","a+")){//archivo de area
             fprintf(arch,"%d",agregar.id_area);
             fputc('*',arch);
@@ -242,9 +321,8 @@ void registro_area(){
             fputc('*',arch);
             fprintf(arch,"%s",agregar.desc_area);
             fputc('*',arch);
-            fprintf(arch,"%d",agregar.habilitado);
+            fprintf(arch,"%d",1);
             fputc('\n',arch);
-            printf("Guardado en el archivo\n");
          }else{
             printf("Error al abrir el archivo\n");
          }
@@ -256,14 +334,15 @@ void registro(FILE *arch){ //manejo de archivos
 system("cls");
     FILE *erch;
     FILE *irch;
-    int resultado;
+    int resultado,correcto=0;
     area temporal;
-	 empleado emp,tempo;
+	 empleado emp,tempo,temporalDos;
+	 char cadena[30];
      //fputs("**Registro de Empleados**\n",arch);
      //fputs("ID Nom   \tAp_Pat\t   Ap_Mat\t\t Fecha_Nac\t\t Genero\t\t Direccion\t Telefono  Nomina  Puesto\n",arch); //Acomodo en el archivo
 	emp.id_empleado = 0;
 	if(!(arch = fopen("Area.txt","r+"))){
-		printf("Ahhhh No existe este archvio, primero agrega un area\n");
+		printf("Para ingresar usuarios primero tienes que ingresar las areas\n");
 		system("pause");
 		registro_area();
 	}
@@ -364,33 +443,68 @@ system("cls");
 		fputs(emp.sexo, arch);
 		fputc('*',arch);
 		
+		do{
         printf("Direccion: ");
         gets(emp.direccion);
+
+    	}while(verificar_direccion(emp.direccion)!=1);
         fputs(emp.direccion, arch);
         fputc('*',arch);
-           
+        
+        do{
 		printf("Telefono: ");
 		gets(emp.telefono);
+		}while(verificar_telefono(emp.telefono)!=1);
+		
 		fputs(emp.telefono, arch);
 		fputc('*',arch);
            
-		if(erch = fopen("Area.txt","r+")){
-			while(!feof(erch)){
-			fscanf(erch,"%d*",&temporal.id_area);
-			fscanf(erch,"%[^*]*",temporal.nombre);
-			fscanf(erch,"%[^*]*",temporal.desc_area);
-			fscanf(erch,"%d\n",&temporal.habilitado);
-				if(temporal.habilitado==1){
-				printf("%d\t%s\t%s\n",temporal.id_area,temporal.nombre,temporal.desc_area);
+        do{
+    
+			if(erch = fopen("Area.txt","r+")){
+				while(!feof(erch)){
+				fscanf(erch,"%d*",&temporal.id_area);
+				fscanf(erch,"%[^*]*",temporal.nombre);
+				fscanf(erch,"%[^*]*",temporal.desc_area);
+				fscanf(erch,"%d\n",&temporal.habilitado);
+					if(temporal.habilitado==1){
+					printf("%d\t%s\t%s\n",temporal.id_area,temporal.nombre,temporal.desc_area);
+					}
+				}
+			}else{
+				printf("Hubo un error al abrir el archivo \"Area \" ");
+				system("pause");
+				registro_area();
+			}
+		do{
+		printf("Elige una opcion\n");
+		fflush(stdin);
+		scanf("%d",&emp.id_area);
+		itoa (emp.id_area,cadena,10);
+		}while(verificar_telefono(cadena)!=1);
+		
+			if(erch = fopen("Area.txt","r+")){
+				while(!feof(erch)){
+				fscanf(erch,"%d*",&temporal.id_area);
+				fscanf(erch,"%[^*]*",temporal.nombre);
+				fscanf(erch,"%[^*]*",temporal.desc_area);
+				fscanf(erch,"%d\n",&temporal.habilitado);
+					if(temporal.habilitado==1){
+						if(temporal.id_area==emp.id_area){
+							correcto = 1;
+						}
+					}
 				}
 			}
-		}else{
-			printf("Error en el archivo de Area.txt\n");
-		}
-		printf("Elige una opcion\n");
-		scanf("%d",&emp.id_area);
+			if(correcto!=1){
+				printf("Area no valida,por favor vuele a elegir\n\n");
+			}
+		}while(correcto!=1);
+		correcto=0;
+		
 		fprintf(arch,"%d",emp.id_area);
 		fputc('*',arch);
+		
 		do{
 		printf("Puesto: ");
 		fflush(stdin);
@@ -399,18 +513,61 @@ system("cls");
 		
 		fputs(emp.puesto, arch);
 		fputc('*',arch);
+		do{
 		
-		printf("Password: ");
-		fflush(stdin);
-		gets(emp.password);
+			do{
+				printf("Usuario :");
+				fflush(stdin);
+				gets(emp.usuario);
+
+			}while(verificar_direccion(emp.usuario)!=1);
+			correcto=1;
+			if(irch=fopen("Empleados.txt","r+")){
+				while(feof(irch)){
+					fscanf(irch,"%d*",&temporalDos.id_empleado);
+			        fscanf(irch,"%[^*]*",&temporalDos.nombre);
+			        fscanf(irch,"%[^*]*",&temporalDos.apellido_p);
+			        fscanf(irch,"%[^*]*",&temporalDos.apellido_m);
+			        fscanf(irch,"%d*",&temporalDos.day);
+			        fscanf(irch,"%d*",&temporalDos.month);
+			        fscanf(irch,"%d*",&temporalDos.year);
+			        fscanf(irch,"%[^*]*",&temporalDos.sexo);
+			        fscanf(irch,"%[^*]*",&temporalDos.direccion);
+			        fscanf(irch,"%[^*]*",&temporalDos.telefono);
+			        fscanf(irch,"%d*",&temporalDos.id_area);
+			        fscanf(irch,"%[^*]*",&temporalDos.puesto);
+			        fscanf(irch,"%[^*]*",&temporalDos.usuario);
+			        fscanf(irch,"%[^*]*",&temporalDos.password);
+			        fscanf(irch,"%d\n",&temporalDos.habilitado);
+			        if(temporalDos.habilitado==1){
+			        	if(temporalDos.usuario==emp.usuario){
+			        		correcto=2;
+			        	}
+			        }
+				}
+			}
+			
+			if(correcto==2)
+			printf("Este nombre de usuario ya esta en uso\n");
+			
+		}while(correcto!=1);
+		
+		fputs(emp.usuario, arch);
+		fputc('*',arch);
+		
+		do{
+			printf("Password: ");
+			fflush(stdin);
+			gets(emp.password);
+		}while(verificar_direccion(emp.password)!=1);
+		
 		fputs(emp.password, arch);
 
-		fputs("*1",arch);
+		fputs("*1",arch);//Habilitado
 		fputc('\n',arch);
 		
         
         fclose(arch);
-        fclose(irch);
 }
 
 //REGISTRO DE INVENTARIO//
@@ -528,7 +685,6 @@ void registro_receta(FILE *arch){
        fscanf(arch,"%[^*]*",&rec.descripcion);
        fscanf(arch,"%d*",&rec.precio);
        fscanf(arch,"%d\n",&rec.habilitado);
-       printf("%d ",rec.id_receta);
     }
     rec.id_receta+=1;
     fprintf(arch,"%d*",rec.id_receta);
@@ -617,6 +773,7 @@ void ver_empleado(FILE *arch){
         fscanf(arch,"%[^*]*",&temporal.telefono);
         fscanf(arch,"%d*",&temporal.id_area);
         fscanf(arch,"%[^*]*",&temporal.puesto);
+        fscanf(arch,"%[^*]*",&temporal.usuario);
         fscanf(arch,"%[^*]*",&temporal.password);
         fscanf(arch,"%d\n",&temporal.habilitado);
 
@@ -632,7 +789,7 @@ void ver_empleado(FILE *arch){
         }
         if(temporal.habilitado==1){
         	cont+=1;
-	        printf("\tID: %d \n\tNombre :%s %s %s\n\tFecha de Nacimiento: %d %d %d\n\tSexo: %s\n\tDireccion: %s\n\tTelefono: %s \n\tArea: %s\n\tPuesto: %s\n\tPassword: %s\n\n",temporal.id_empleado,temporal.nombre,temporal.apellido_p,temporal.apellido_m,temporal.day,temporal.month,temporal.year,temporal.sexo,temporal.direccion,temporal.telefono,area,temporal.puesto,temporal.password);
+	        printf("\tID: %d \n\tNombre :%s %s %s\n\tFecha de Nacimiento: %d %d %d\n\tSexo: %s\n\tDireccion: %s\n\tTelefono: %s \n\tArea: %s\n\tPuesto: %s\n\tUsuario: %s\n\tPassword: %s\n\n",temporal.id_empleado,temporal.nombre,temporal.apellido_p,temporal.apellido_m,temporal.day,temporal.month,temporal.year,temporal.sexo,temporal.direccion,temporal.telefono,area,temporal.puesto,temporal.usuario,temporal.password);
         }
     }
     fclose(arch);
@@ -642,6 +799,8 @@ void ver_empleado(FILE *arch){
     }
 	}else{
 		printf("\tNo existe este archivo, primero  tienes que registrar a algun empleado\n");
+		system("pause");
+		registro(&(*arch));
 	}
 }
 //VER AREA
@@ -669,8 +828,9 @@ void ver_area(FILE *arch){
 }
 //VER RECETA
 void ver_receta(FILE *arch){
-	int cont=0;
+	int cont=0,agregar;
     receta rec;
+    
     if(arch = fopen("Receta.txt","r+")){
 	    while(!feof(arch)){
 	    	fscanf(arch,"%d*",&rec.id_receta);
@@ -686,9 +846,20 @@ void ver_receta(FILE *arch){
 	    fclose(arch);
 	    if(cont==0){
     		printf("\tUpps! No hay recetas!\n");
+    		do{
+    		
+				printf("\n\t1.-Agregar Nueva Receta\n\t2.-Salir\n\t");
+	    		scanf("%d",&agregar);
+	    		if(agregar==1){
+	    			registro_receta(&(*arch));
+	    		}
+	    		if(agregar!=1&&agregar!=2)
+	    			printf("No existe esta opcion, vuelve a elegir\n");
+    		}while(agregar!=1&&agregar!=2);
     	}
 	}else{
-		printf("\tNo existe este archivo, primero  tienes que registrar a alguna receta\n");
+		printf("\tNo existe este archivo\nprimero  tienes que registrar a alguna receta\n");
+		registro_receta(&(*arch));
 	}
 }
 //VER INVENTARIO
@@ -1617,15 +1788,4 @@ void inicio_sesion(FILE *arch, FILE *erch, int * sesion){
        inicio_sesion(arch,erch,&(*sesion));
         }
     }
-}
-main(){
-		FILE *arch;
-		FILE *erch;
-       int sesion,continuar;
-       portada();
-       	sesion=0;
-       inicio_sesion(arch, erch, &sesion);
-//       printf("1.-Seguir\n2.-Salir\n");
-//       fflush(stdin);
-//       scanf("%d",&continuar);
 }
