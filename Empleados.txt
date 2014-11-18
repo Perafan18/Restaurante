@@ -1,2 +1,3 @@
 1*Pedrito*Peraf n*Carrasco*18*11*1995*Masculino*Gavilan 817*442423244414*1*Jefe*Pedro*123*0
 2*Pedro*Peraf n*Melendez*23*9*1960*Masculino*Gavilan 817*443646674*1*Cocinero*Pedro2*123*1
+3*Alejandra*Melendez*Reyes*9*3*1995*Masculino*Rioverde*325525*2*Cajera*Alejandra*12345*1

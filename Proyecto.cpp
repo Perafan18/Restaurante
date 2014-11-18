@@ -82,6 +82,8 @@ int verificar_numero(int numero);
 int verificar(char string[]);
 void portada();
 int verificar_direccion(char string[]);
+void atender_orden(FILE *arch);
+void cobrar_orden(FILE *arch);
 
 main(){
 		FILE *arch;
@@ -93,6 +95,13 @@ main(){
 //       printf("1.-Seguir\n2.-Salir\n");
 //       fflush(stdin);
 //       scanf("%d",&continuar);
+}
+
+
+void atender_orden(FILE *arch){
+	if(arch = fopen("")){
+		
+	}
 }
 //PORTADA DE INICIO
 void portada(){
@@ -288,7 +297,95 @@ void baja_recetas(FILE *arch){
 		printf("No existe el archivo de Recetas,ingresa nuevas recetas\n");
 		registro_receta(&(*arch));
 	}
+}
 
+void baja_inventario(FILE *arch){
+	FILE *erch;
+	inventario temporal;
+	int id;
+	ver_inventario(&(*arch));
+	printf("Dame el ID para eliminar \n");
+	scanf("%d",&id);
+	
+	if(arch = fopen("Inventario.txt","r")){
+		erch = fopen("InventarioTemp.txt","w");
+		while(!feof(arch)){
+			fscanf(arch,"%d*",&temporal.id_inventario);
+	        fscanf(arch,"%[^*]*",temporal.nombre);
+	        fscanf(arch,"%f*",&temporal.peso);
+	        fscanf(arch,"%f*",&temporal.costo);
+	        fscanf(arch,"%f*",&temporal.cantidad);
+	        fscanf(arch,"%d\n",&temporal.habilitado);
+	        
+			if(id==temporal.id_inventario){
+	        	fprintf(erch,"%d*%s*%f*%f*%f*%d\n",temporal.id_inventario,temporal.nombre,temporal.peso,temporal.costo,temporal.cantidad,0);
+	        }else{
+	        	fprintf(erch,"%d*%s*%f*%f*%f*%d\n",temporal.id_inventario,temporal.nombre,temporal.peso,temporal.costo,temporal.cantidad,temporal.habilitado);
+	        }
+		}
+	}
+	fclose(arch);
+	fclose(erch);
+		//DE REGRESO :D
+	if(erch = fopen("InventarioTemp.txt","r")){
+		arch = fopen("Inventario.txt","w");
+		while(!feof(erch)){
+			fscanf(erch,"%d*",&temporal.id_inventario);
+	        fscanf(erch,"%[^*]*",temporal.nombre);
+	        fscanf(erch,"%f*",&temporal.peso);
+	        fscanf(erch,"%f*",&temporal.costo);
+	        fscanf(erch,"%f*",&temporal.cantidad);
+	        fscanf(erch,"%d\n",&temporal.habilitado);
+	        
+	        	fprintf(arch,"%d*%s*%f*%f*%f*%d\n",temporal.id_inventario,temporal.nombre,temporal.peso,temporal.costo,temporal.cantidad,temporal.habilitado);
+	    
+		}
+	}
+	
+	fclose(arch);
+	fclose(erch);
+}
+void baja_area(FILE *arch){
+	FILE *erch;
+	int id;
+	ver_area(&(*arch));
+	printf("Dame el ID para eliminar \n");
+	scanf("%d",&id);
+	
+	
+	if(arch = fopen("Area.txt","r")){
+		erch = fopen("AreaTemp.txt","w");
+		while(!feof(arch)){
+			fscanf(arch,"%d*",&temporal.id_area);
+	        fscanf(arch,"%[^*]*",temporal.nombre);
+	        fscanf(arch,"%[^*]*",temporal.desc_area);
+	        fscanf(arch,"%d\n",&temporal.habilitado);
+	        
+			if(id==temporal.id_area){
+	        	fprintf(erch,"%d*%s*%s*%d\n",temporal.id_area,temporal.nombre,temporal.desc_area,0);
+	        }else{
+	        	fprintf(erch,"%d*%s*%s*%d\n",temporal.id_area,temporal.nombre,temporal.desc_area,temporal.habilitado);
+	        }
+		}
+	}
+	fclose(arch);
+	fclose(erch);
+		//DE REGRESO :D
+	if(erch = fopen("AreaTemp.txt","r")){
+		arch = fopen("Area.txt","w");
+		while(!feof(erch)){
+			fscanf(erch,"%d*",&temporal.id_area);
+	        fscanf(erch,"%[^*]*",temporal.nombre);
+	        fscanf(erch,"%[^*]*",temporal.desc_area);
+	        fscanf(erch,"%d\n",&temporal.habilitado);
+	        
+	        	fprintf(arch,"%d*%s*%s*%d\n",temporal.id_area,temporal.nombre,temporal.desc_area,temporal.habilitado);
+	    
+		}
+	}
+	
+	fclose(arch);
+	fclose(erch);
 }
 ////*************************REGISTROS*****************************************////////
      
@@ -827,31 +924,8 @@ void registro_receta(FILE *arch){
 	         fscanf(erch,"%f*",&temp.cantidad);
 	         fscanf(erch,"%d\n",&temp.habilitado);
 	             if(temp.habilitado==1){
-
-	             	correctoDos=1;
-	             	if(irch = fopen("Receta_Inventario.txt","r+")){
-
-	             		while(!feof(irch)){
-	             			fscanf(irch,"%d*",&id);
-					        fscanf(irch,"%d*",&ingrediente);
-					        fscanf(irch,"%f*\n",&porciones);
-					        if(id==temp.id_inventario){
-					        	correctoDos=0;
-					        }
-	             		}
-	             		if(correctoDos==1){
-	             			cont+=1;
-	             			printf("ID: %d\nNombre: %s\n\n",temp.id_inventario,temp.nombre);
-	             		}
-						 fclose(irch);
-						 //if(cont==0){
-				        //	printf("\nYa se agregaron todos los elementos posibles a la receta\n");
-				    	//	cont=2;
-				        //}
-	             	}else{
 	             		cont+=1;
 	             		printf("ID: %d\nNombre: %s\n\n",temp.id_inventario,temp.nombre);
-	             	}
 
 	             }
 	        }
@@ -1026,10 +1100,9 @@ void ver_receta(FILE *arch){
 	    }
 	    fclose(arch);
 	    if(cont==0){
-    		printf("\tUpps! No hay recetas!\n\tEs necesario agregar nuevas recetas\n");
+    		printf("\tUpps! No hay recetas!\n\n");
     		system("pause");
 	    	registro_receta(&(*arch));
-	    	
     	}
 	}else{
 		printf("\tNo existe este archivo\nprimero  tienes que registrar a alguna receta\n");
@@ -1066,35 +1139,49 @@ void ver_inventario(FILE *arch){
 void ver_orden(FILE *arch){
     FILE *erch;
 	orden ord;
+	receta rec;
     detalle_orden temporal;
     int cont;
     if(erch = fopen("Orden_detalle.txt","r+")){
     	while(!feof(erch)){
-    		
+    		fscanf(erch,"%d*",temporal.id_detalle_orden);
+    		fscanf(erch,"%d*",temporal.id_orden);
+    		fscanf(erch,"%d",temporal.id_receta);
+		    if(arch = fopen("Orden.txt","r+")){
+			    while(!feof(arch)){
+			    	fscanf(arch,"%d*",&ord.id_orden);
+				        fscanf(arch,"%d*",&ord.day);
+				        fscanf(arch,"%d*",&ord.month);
+				        fscanf(arch,"%d*",&ord.year);
+				        fscanf(arch,"%d*",&ord.mesa);
+				        fscanf(arch,"%[^*]*",ord.detalles);
+				        fscanf(arch,"%f*",&ord.total);
+				        fscanf(arch,"%d\n",&ord.habilitado);
+					    if(ord.habilitado==1&&temporal.id_orden==ord.id_orden){
+					    cont+=1;
+				        printf("\nID:%d \n\tFecha: %d %d %d\n\tMesa:%d\n\tDetalles:%s\n\tTotal:%f\n\t",ord.id_orden,ord.day,ord.month,ord.year,ord.mesa,ord.detalles,ord.total,ord.habilitado);
+				    	}
+			    }
+			    fclose(arch);
+			}
+			if(cont>0){
+				if(arch = fopen("Receta.txt","r+")){
+					while(!feof(arch)){
+					   fscanf(arch,"%d*",&rec.id_receta);
+				       fscanf(arch,"%[^*]*",&rec.nombre);
+				       fscanf(arch,"%[^*]*",&rec.descripcion);
+				       fscanf(arch,"%f*",&rec.precio);
+				       fscanf(arch,"%d\n",&rec.habilitado);
+				       if(rec.habilitado==1){
+				    		printf("Nombre del Platillo:%s\n\t",rec.nombre);
+				       }
+					}
+				}
+			}
     	}
-    }
-    
-    if(arch = fopen("Orden.txt","r+")){
-	    while(!feof(arch)){
-	    	fscanf(arch,"%d*",&ord.id_orden);
-		        fscanf(arch,"%d*",&ord.day);
-		        fscanf(arch,"%d*",&ord.month);
-		        fscanf(arch,"%d*",&ord.year);
-		        fscanf(arch,"%d*",&ord.mesa);
-		        fscanf(arch,"%[^*]*",ord.detalles);
-		        fscanf(arch,"%f*",&ord.total);
-		        fscanf(arch,"%d\n",&ord.habilitado);
-		    if(ord.habilitado==1){
-		    cont+=1;
-	        printf("%d %d %d %d %d %s %f %d\n\t",ord.id_orden,ord.day,ord.month,ord.year,ord.mesa,ord.detalles,ord.total,ord.habilitado);
-	    	}
-	    }
-	    fclose(arch);
-	    if(cont==0){
-    		printf("\tUpps! No hay ordenes!\n");
-    	}
-	}else{
+    }else{
 		printf("\tNo existe el archivo, primero  tienes que registrar a alguna orden\n");
+		system("pause");
 		registro_orden(&(*arch));
 	}
 }
@@ -1585,8 +1672,8 @@ void modificar_area(FILE *arch){
 	printf("Descripcion: ");
     fflush(stdin);
     gets(ar.desc_area);
-	printf("Habilitado 1. Si 0. No: ");
-    scanf("%d", &ar.habilitado);
+
+    ar.habilitado=1;
     
 	if(arch = fopen("Area.txt","r")){
 		erch = fopen("AreaTemp.txt","w");
@@ -1708,7 +1795,7 @@ void menu_principal(FILE *arch,  int * sesion){
                      break;
                 case 3:
                      printf("\n\t**Menu Orden**\n\t");
-                     printf("1. Registro de Orden\n\t2. Ver Orden\n\t3. Modificar Orden\n\t4. Dar de Baja una Orden\n\t 5. Detalle de orden\n\t6.-Regresar al menu principal\n\tOpcion:");
+                     printf("1. Registro de Orden\n\t2. Ver Orden\n\t3. Modificar Orden\n\t4. Atender Orden\n\t5. Cobrar Orden\n\t6. Dar de Baja una Orden\n\t7.-Regresar al menu principal\n\tOpcion:");
                      scanf("%d",&op2);
                      switch(op2){
                                  case 1:
@@ -1716,6 +1803,7 @@ void menu_principal(FILE *arch,  int * sesion){
                                       registro_orden(arch);
                                       break;
                                  case 2:
+                                 	system("pause");
                                       printf("\n\t**Ver Orden**\n\t");
                                       ver_orden(arch);
                                       break;
@@ -1724,12 +1812,17 @@ void menu_principal(FILE *arch,  int * sesion){
                                       modificar_orden(arch);
                                       break;
                                  case 4:
-                                      printf("\n\t**Dar de Baja Orden**\n\t");
+                                      printf("\n\t**Atender Orden (cocina)**\n\t");
+                                      atender_orden(arch);
                                       break;
-                                case 5:
-                                	printf("\n\t**Detalle de Orden**\n\t");
-                                	break;
+                            	case 5:
+                            		printf("\n\t**Cobrar Orden (caja)**\n\t");
+                            		cobrar_orden(arch);
+                            		break;
                                 case 6:
+                                		printf("\n\t**Dar de Baja Orden**\n\t");
+                                	break;
+                                case 7:
                                 	cont=1;
                                 	break;
                                  default:
@@ -1756,6 +1849,7 @@ void menu_principal(FILE *arch,  int * sesion){
                                       break;
                                 case 4:
                                 	  printf("\n\t**Dar de Baja Producto en Inventario**\n\t");
+                                	   baja_inventario(arch);
                                 	break;
                                 case 5:
                                 	cont=1;
@@ -1795,7 +1889,7 @@ void menu_principal(FILE *arch,  int * sesion){
                                  		printf("Opcion deshabilitada para empleados\n");
                                  	}else{
                                       printf("\n\t**Dar de baja Area**\n\t");
-                                      //baja_area();
+                                      baja_area(arch);
                                     }
                                 	break;
                                 case 5:
