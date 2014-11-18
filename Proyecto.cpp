@@ -477,7 +477,7 @@ system("cls");
 				registro_area();
 			}
 		do{
-		printf("Elige una opcion\n");
+		printf("Elige un area:\n");
 		fflush(stdin);
 		scanf("%d",&emp.id_area);
 		itoa (emp.id_area,cadena,10);
@@ -919,45 +919,66 @@ void ver_orden(FILE *arch){
 //MODIFICAR EMPLEADO//
 void modificar_empleado(FILE *arch){
 	area temporal;
-	FILE *erch;
+	FILE *erch,*irch;
 	empleado emp,temporalDos,temporalTres;
-	int opcion;
+	int opcion,resultado,correcto=0;
+	char cadena[30];
 	printf("Empleados\n");
 	ver_empleado(arch);
 	
 	printf("Elige mediante ID:");
 	scanf("%d",&opcion);
 	
-	printf("\n***modificacion de empleados***\n\n");
-	printf("Nombre: ");
-    fflush(stdin);
-    gets(emp.nombre);
+	printf("\n***Modificacion de empleados***\n\n");
+	do{
+			printf("Nombre: ");
+			fflush(stdin);
+			gets(emp.nombre);
+		}while(verificar(emp.nombre)!=1);
           
-	printf("Apellido Paterno: ");
-    fflush(stdin);
-    gets(emp.apellido_p);
+	do{   
+		printf("Apellido Paterno: ");
+		fflush(stdin);
+		gets(emp.apellido_p);
+		}while(verificar(emp.apellido_p)!=1);
     
-	printf("Apellido Materno: ");
-    fflush(stdin);
-    gets(emp.apellido_m);
+	do{ 
+		printf("Apellido Materno: ");
+		fflush(stdin);
+		gets(emp.apellido_m);
+		}while(verificar(emp.apellido_m)!=1);
     
 	printf("Fecha de Nacimiento\n");
     do{ //validacion de dias, mes y año
-    	printf("Dia: ");
-        scanf("%d", &emp.day);
-        if(emp.day!=0 && emp.day>31)
-    		printf("\tDia Invalido\n");
-	}while(emp.day!=0 && emp.day>32);
+			printf("Dia: ");
+			fflush(stdin);
+			scanf("%d", &emp.day);
+			if(emp.day<0 || emp.day>31){
+				printf("\tDia Invalido\n");
+			}
+		}while(emp.day<0 || emp.day>31);
           
 	do{
-        printf("Mes: ");
-    	scanf("%d", &emp.month);
-        if(emp.month!=0 && emp.month>13)
-    		printf("\tMes Invalido\n");
-    }while(emp.month!=0 && emp.month>13);
+			printf("Mes: ");
+			fflush(stdin);
+			resultado = scanf("%d", &emp.month);
+			if(resultado!=1){
+				printf("Solo ingrese numeros");
+			}
+			if(emp.month<0 || emp.month>12)
+			printf("\tMes Invalido\n");
+		}while(emp.month<0 || emp.month>12 || resultado !=1);
     
-	printf("A\xA4o: ");
-    scanf("%d", &emp.year);
+	do{
+			printf("A\xA4o: ");
+			fflush(stdin);
+			scanf("%d", &emp.year);
+			if(emp.year<1924){
+				printf("A\xA4o Invalido, a\xA4o minimo 1924\n\n");
+			}else if(emp.year>2014){
+				printf("A\xA4o Invalido , a\xA4o maximo 2014\n\n");
+			}
+		}while(emp.year<1924||emp.year>2014);
               
 	do{ //validacion de sexo solo Masculino o Femenino
         printf("Sexo: Masculino o Femenino  \n");
@@ -967,42 +988,110 @@ void modificar_empleado(FILE *arch){
         	printf("\tSolo es valido 'Masculino' y 'Femenino'\n");
     }while(strcmp(emp.sexo,"Masculino")!= 0&&strcmp(emp.sexo,"Femenino")!= 0);
           
-	printf("Direccion: ");
-    fflush(stdin);
-	gets(emp.direccion);
+	do{
+        printf("Direccion: ");
+        gets(emp.direccion);
+    	}while(verificar_direccion(emp.direccion)!=1);
           
-  	printf("Telefono: ");
-  	fflush(stdin);
-	gets(emp.telefono);
+  	do{
+		printf("Telefono: ");
+		gets(emp.telefono);
+		}while(verificar_telefono(emp.telefono)!=1);
 	
-	if(erch = fopen("Area.txt","r+")){
-       while(!feof(erch)){
-       fscanf(erch,"%d",&temporal.id_area);
-       fscanf(erch,"%s",temporal.nombre);
-       fscanf(erch,"%s",temporal.desc_area);
-       fscanf(erch,"%d",&temporal.habilitado);
+	do{
+    
+			if(erch = fopen("Area.txt","r+")){
+				while(!feof(erch)){
+				fscanf(erch,"%d*",&temporal.id_area);
+				fscanf(erch,"%[^*]*",temporal.nombre);
+				fscanf(erch,"%[^*]*",temporal.desc_area);
+				fscanf(erch,"%d\n",&temporal.habilitado);
+					if(temporal.habilitado==1){
+					printf("%d\t%s\t%s\n",temporal.id_area,temporal.nombre,temporal.desc_area);
+					}
+				}
+			}else{
+				printf("Hubo un error al abrir el archivo \"Area \" ");
+				system("pause");
+				registro_area();
+			}
+		do{
+		printf("Elige un area\n");
+		fflush(stdin);
+		scanf("%d",&emp.id_area);
+		itoa (emp.id_area,cadena,10);
+		}while(verificar_telefono(cadena)!=1);
+		
+			if(erch = fopen("Area.txt","r+")){
+				while(!feof(erch)){
+				fscanf(erch,"%d*",&temporal.id_area);
+				fscanf(erch,"%[^*]*",temporal.nombre);
+				fscanf(erch,"%[^*]*",temporal.desc_area);
+				fscanf(erch,"%d\n",&temporal.habilitado);
+					if(temporal.habilitado==1){
+						if(temporal.id_area==emp.id_area){
+							correcto = 1;
+						}
+					}
+				}
+			}
+			if(correcto!=1){
+				printf("Area no valida,por favor vuele a elegir\n\n");
+			}
+		}while(correcto!=1);
+		correcto=0;
+	do{
+		printf("Puesto: ");
+		fflush(stdin);
+		gets(emp.puesto);		
+		}while(verificar(emp.puesto)!=1);
+	do{
+		
+			do{
+				printf("Usuario :");
+				fflush(stdin);
+				gets(emp.usuario);
 
-           if(temporal.habilitado==1){
-           printf("%d\t%s\t%s\n",temporal.id_area,temporal.nombre,temporal.desc_area);
-           }
-
-       }
-   }else{
-   printf("Error en el archivo de Area.txt\n");
-   }
-      
-    printf("Elige una opcion\n");
-    fflush(stdin);
-	scanf("%d",&emp.id_area);
-     
-	printf("Puesto: ");
-	fflush(stdin);
-	gets(emp.puesto);
-	
-	printf("Password: ");
-	fflush(stdin);
-	gets(emp.password);
-	
+			}while(verificar_direccion(emp.usuario)!=1);
+			correcto=1;
+			if(irch=fopen("Empleados.txt","r+")){
+				while(feof(irch)){
+					fscanf(irch,"%d*",&temporalDos.id_empleado);
+			        fscanf(irch,"%[^*]*",&temporalDos.nombre);
+			        fscanf(irch,"%[^*]*",&temporalDos.apellido_p);
+			        fscanf(irch,"%[^*]*",&temporalDos.apellido_m);
+			        fscanf(irch,"%d*",&temporalDos.day);
+			        fscanf(irch,"%d*",&temporalDos.month);
+			        fscanf(irch,"%d*",&temporalDos.year);
+			        fscanf(irch,"%[^*]*",&temporalDos.sexo);
+			        fscanf(irch,"%[^*]*",&temporalDos.direccion);
+			        fscanf(irch,"%[^*]*",&temporalDos.telefono);
+			        fscanf(irch,"%d*",&temporalDos.id_area);
+			        fscanf(irch,"%[^*]*",&temporalDos.puesto);
+			        fscanf(irch,"%[^*]*",&temporalDos.usuario);
+			        fscanf(irch,"%[^*]*",&temporalDos.password);
+			        fscanf(irch,"%d\n",&temporalDos.habilitado);
+			        if(temporalDos.habilitado==1){
+			        	if(temporalDos.usuario==emp.usuario){
+			        		correcto=2;
+			        	}
+			        }
+				}
+			}
+			
+			if(correcto==2)
+			printf("Este nombre de usuario ya esta en uso\n");
+			
+		}while(correcto!=1);
+	do{
+			printf("Password: ");
+			fflush(stdin);
+			gets(emp.password);
+		}while(verificar_direccion(emp.password)!=1);
+		do{
+	printf("Habilitado? 1.Si 0.No\n");
+	scanf("%d",&emp.habilitado);
+	}while(emp.habilitado!=1&&emp.habilitado!=0);
 	if(arch = fopen("Empleados.txt","r+")){
 		erch = fopen("EmpleadosTemp.txt","w");
 		while(!feof(arch)){
@@ -1018,12 +1107,13 @@ void modificar_empleado(FILE *arch){
 	        fscanf(arch,"%[^*]*",temporalDos.telefono);
 	        fscanf(arch,"%d*",&temporalDos.id_area);
 	        fscanf(arch,"%[^*]*",temporalDos.puesto);
-	        fscanf(arch,"%[^'\n']\n",&temporalDos.password);
-	        
+	        fscanf(arch,"%[^*]*",&temporalDos.usuario);
+	        fscanf(arch,"%[^*]*",&temporalDos.password);
+	        fscanf(arch,"%d\n",&temporalDos.habilitado);
 			if(opcion==temporalDos.id_empleado){
-	        	fprintf(erch,"%d*%s*%s*%s*%d*%d*%d*%s*%s*%s*%d*%s*%s\n",opcion,emp.nombre,emp.apellido_m,emp.apellido_p,emp.day,emp.month,emp.year,emp.sexo,emp.direccion,emp.telefono,emp.id_area,emp.puesto, emp.password);
+	        	fprintf(erch,"%d*%s*%s*%s*%d*%d*%d*%s*%s*%s*%d*%s*%s*%s*%d\n",opcion,emp.nombre,emp.apellido_m,emp.apellido_p,emp.day,emp.month,emp.year,emp.sexo,emp.direccion,emp.telefono,emp.id_area,emp.puesto,emp.usuario,emp.password,emp.habilitado);
 	        }else{
-	        	fprintf(erch,"%d*%s*%s*%s*%d*%d*%d*%s*%s*%s*%d*%s*%s\n",temporalDos.id_empleado,temporalDos.nombre,temporalDos.apellido_m,temporalDos.apellido_p,temporalDos.day,temporalDos.month,temporalDos.year,temporalDos.sexo,temporalDos.direccion,temporalDos.telefono,temporalDos.id_area,temporalDos.puesto, temporalDos.password);
+	        	fprintf(erch,"%d*%s*%s*%s*%d*%d*%d*%s*%s*%s*%d*%s*%s*%s*%d\n",temporalDos.id_empleado,temporalDos.nombre,temporalDos.apellido_m,temporalDos.apellido_p,temporalDos.day,temporalDos.month,temporalDos.year,temporalDos.sexo,temporalDos.direccion,temporalDos.telefono,temporalDos.id_area,temporalDos.puesto,temporalDos.usuario,temporalDos.password,temporalDos.habilitado);
 	        }
 		}
 	}
@@ -1044,9 +1134,11 @@ void modificar_empleado(FILE *arch){
 	        fscanf(erch,"%[^*]*",temporalDos.direccion);
 	        fscanf(erch,"%[^*]*",temporalDos.telefono);
 	        fscanf(erch,"%d*",&temporalDos.id_area);
-	        fscanf(erch,"%[^'\n']\n",&temporalDos.puesto);
-	        
-	        	fprintf(arch,"%d*%s*%s*%s*%d*%d*%d*%s*%s*%s*%d*%s\n",temporalDos.id_empleado,temporalDos.nombre,temporalDos.apellido_m,temporalDos.apellido_p,temporalDos.day,temporalDos.month,temporalDos.year,temporalDos.sexo,temporalDos.direccion,temporalDos.telefono,temporalDos.id_area,temporalDos.puesto);
+	        fscanf(erch,"%[^*]*",&temporalDos.puesto);
+	        fscanf(erch,"%[^*]*",&temporalDos.usuario);
+	        fscanf(erch,"%[^*]*",&temporalDos.password);
+	        fscanf(erch,"%d\n",&temporalDos.habilitado);
+	        	fprintf(arch,"%d*%s*%s*%s*%d*%d*%d*%s*%s*%s*%d*%s*%s*%s*%d\n",temporalDos.id_empleado,temporalDos.nombre,temporalDos.apellido_m,temporalDos.apellido_p,temporalDos.day,temporalDos.month,temporalDos.year,temporalDos.sexo,temporalDos.direccion,temporalDos.telefono,temporalDos.id_area,temporalDos.puesto,temporalDos.usuario,temporalDos.password,temporalDos.habilitado);
 	    
 		}
 	}
