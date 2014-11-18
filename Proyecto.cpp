@@ -53,6 +53,7 @@ typedef struct{ //Tabla de Receta
 }receta;
 
 typedef struct{//Tabla de receta
+		int id_detalle_orden;
         int id_receta;//id de receta
         int id_orden;//id de orden
 }detalle_orden;
@@ -242,6 +243,8 @@ void baja_recetas(FILE *arch){
 	FILE *erch;
 	receta temporal;
 	int id;
+	ver_receta(&(*arch));
+	
 	printf("Dame el ID para eliminar \n");
 	scanf("%d",&id);
 	
@@ -260,7 +263,6 @@ void baja_recetas(FILE *arch){
 	        	fprintf(erch,"%d*%s*%s*%f*%d\n",temporal.id_receta,temporal.nombre,temporal.descripcion,temporal.precio,temporal.habilitado);
 	        }
 		}
-	}
 	fclose(arch);
 	fclose(erch);
 		//DE REGRESO :D
@@ -280,6 +282,11 @@ void baja_recetas(FILE *arch){
 	
 	fclose(arch);
 	fclose(erch);
+	}else{
+		printf("No existe el archivo de Recetas,ingresa nuevas recetas\n");
+		registro_receta(&(*arch));
+	}
+
 }
 ////*************************REGISTROS*****************************************////////
      
@@ -603,17 +610,17 @@ void registro_inventario(){
 	do{
     printf("Peso : ");
     fflush(stdin);
-	}while(scanf("%f",&nuevo.peso)==0);
+	}while(scanf("%f",&nuevo.peso)==0||nuevo.peso<=0);
 	
 	do{
     printf("Costo : ");
     fflush(stdin);
-    }while(scanf("%f",&nuevo.costo)==0); 
+    }while(scanf("%f",&nuevo.costo)==0||nuevo.costo<=0); 
     
     do{
     printf("Cantidad : ");
     fflush(stdin);
-    }while(scanf("%f",&nuevo.cantidad)==0);
+    }while(scanf("%f",&nuevo.cantidad)==0||nuevo.cantidad<=0);
     
     if(arch = fopen("Inventario.txt","a+")){
             fprintf(arch,"%d*",nuevo.id_inventario);
@@ -627,60 +634,146 @@ void registro_inventario(){
 }
 ///REGISTRO DE ORDEN
 void registro_orden(FILE *arch){
+	FILE *erch,*irch;
 	orden ord, tempo;
-	arch=fopen("Orden.txt","a+"); //archivo de Orden
-	while(!feof(arch)){
-	        fscanf(arch,"%d*",&tempo.id_orden);
-	        fscanf(arch,"%d*",&tempo.day);
-	        fscanf(arch,"%d*",&tempo.month);
-	        fscanf(arch,"%d*",&tempo.year);
-	        fscanf(arch,"%d*",&tempo.mesa);
-	        fscanf(arch,"%[^*]*",tempo.detalles);
-	        fscanf(arch,"%f*",&tempo.total);
-	        fscanf(arch,"%d\n",&tempo.habilitado);
-		}	
-     printf("\n***Registro de Ordenes***\n\n");
-     		ord.id_orden= tempo.id_orden+1;
-          fprintf(arch,"%d*",ord.id_orden);
-          printf("Fecha de la orden \n");
-	          do{ //validacion de dias, mes y año
-          printf("Dia: ");
-          scanf("%d", &ord.day);
-            if(ord.day!=0 && ord.day>31)
-                      	printf("\tDia Invalido\n");
-          }while(ord.day!=0 && ord.day>32);
-          fprintf(arch,"%d",ord.day);
-          fputc('*',arch);
-          do{
-          printf("Mes: ");
-          scanf("%d", &ord.month);
-                      if(ord.month!=0 && ord.month>13)
-                      	printf("\tMes Invalido\n");
-          }while(ord.month!=0 && ord.month>13);
-              fprintf(arch,"%d",ord.month);
-               fputc('*',arch);
-          printf("A\xA4o: ");
-          scanf("%d", &ord.year);
-          fprintf(arch,"%d",ord.year);
-          fputc('*',arch);
-          printf("Numero de Mesa: ");
-	      scanf("%d", &ord.mesa);
-          fprintf(arch,"%d",ord.mesa);
-           fputc('*',arch);
-          printf("Detalles: ");
-          fflush(stdin);
-          gets(ord.detalles);
-          fputs(ord.detalles, arch);
-           fputc('*',arch);
-          printf("Total: ");
-          scanf("%f", &ord.total);
-          fprintf(arch,"%f",ord.total);
-           fputc('*',arch);
-           printf("Habilitado 1. Si 0. No: ");
-    	scanf("%d", &ord.habilitado);
-    	fprintf(arch,"%d",ord.habilitado);
-           fputc('\n',arch);
-        fclose(arch);
+	int continuar,resultado,opcion,seguir;
+	detalle_orden temporal;
+	receta rec;
+	system("cls");
+	do{
+	printf("\tBienvenido , puedo tomar su orden ?\n\t1.-Si\n\t2.-No\n\t");
+	}while(scanf("%d",&continuar)==0||(continuar!=1&&continuar!=2));
+	if(continuar==1){
+		do{
+		
+		tempo.id_orden = 0;
+		ord.id_orden=0;
+		temporal.id_detalle_orden=0;
+		if(erch=fopen("Orden_detalle.txt","r+")){
+			while(!feof(erch)){
+				fscanf(erch,"%d*",&temporal.id_detalle_orden);
+				fscanf(erch,"%d*",&temporal.id_orden);
+				fscanf(erch,"%d\n",&temporal.id_receta);
+			}
+			fclose(erch);
+		}
+		temporal.id_detalle_orden+=1;
+		erch = fopen("Orden_detalle.txt","a+"); 
+		
+		printf("Menu\n");
+		ver_receta(&(*irch));
+		do{
+		printf("Elige mediante ID: ");
+		resultado = scanf("%d",&opcion);	
+		}while(resultado==0||opcion==0);
+		fprintf(erch,"%d*",temporal.id_detalle_orden);
+		fprintf(erch,"%d*",opcion);
+		
+		if(arch=fopen("Orden.txt","r+")){ //archivo de Orden
+			while(!feof(arch)){
+				fscanf(arch,"%d*",&tempo.id_orden);
+				fscanf(arch,"%d*",&tempo.day);
+				fscanf(arch,"%d*",&tempo.month);
+				fscanf(arch,"%d*",&tempo.year);
+				fscanf(arch,"%d*",&tempo.mesa);
+				fscanf(arch,"%[^*]*",tempo.detalles);
+				fscanf(arch,"%f*",&tempo.total);
+				fscanf(arch,"%d\n",&tempo.habilitado);
+			}
+		}
+		fclose(arch);
+		arch=fopen("Orden.txt","a+");
+		
+		printf("\n***Registro de Ordenes***\n\n");
+		ord.id_orden= tempo.id_orden+1;
+		
+		fprintf(arch,"%d*",ord.id_orden);
+		fprintf(erch,"%d\n",ord.id_orden);
+		printf("Fecha de la orden \n");
+		
+		do{ //validacion de dias, mes y año
+				printf("Dia: ");
+				fflush(stdin);
+				resultado =  scanf("%d", &ord.day);
+				if(resultado!=1){
+					printf("Solo ingrese numeros\n");
+				}
+				if(ord.day<0 || ord.day>31){
+					printf("\tDia Invalido\n");
+				}
+			}while(ord.day<0 || ord.day>31 || resultado !=1);
+			fprintf(arch,"%d",ord.day);
+			fputc('*',arch);
+	          
+			do{
+				printf("Mes: ");
+				fflush(stdin);
+				resultado = scanf("%d", &ord.month);
+				if(resultado!=1){
+					printf("Solo ingrese numeros\n");
+				}
+				if(ord.month<0 || ord.month>12)
+				printf("\tMes Invalido\n");
+			}while(ord.month<0 || ord.month>12 || resultado !=1);
+			fprintf(arch,"%d",ord.month);
+			fputc('*',arch);
+	        
+	        do{
+				printf("A\xA4o: ");
+				fflush(stdin);
+				scanf("%d", &ord.year);
+				if(ord.year<2014){
+					printf("A\xA4o Invalido , a\xA4o minimo 2014\n\n");
+				}
+			}while(ord.year<2014);
+			fprintf(arch,"%d",ord.year);
+			fputc('*',arch);
+	
+		do{
+		printf("Numero de Mesa: ");
+		fflush(stdin);
+		}while(scanf("%d", &ord.mesa)==0||ord.mesa==0);
+		fprintf(arch,"%d",ord.mesa);
+		fputc('*',arch);
+		
+		do{
+		printf("Detalles: ");
+		fflush(stdin);
+		gets(ord.detalles);
+		}while(verificar_direccion(ord.detalles)!=1);
+		fputs(ord.detalles, arch);
+		fputc('*',arch);
+		
+		if(erch = fopen("Receta.txt","r+")){
+		    while(!feof(erch)){
+		    	fscanf(erch,"%d*",&rec.id_receta);
+		       fscanf(erch,"%[^*]*",&rec.nombre);
+		       fscanf(erch,"%[^*]*",&rec.descripcion);
+		       fscanf(erch,"%f*",&rec.precio);
+		       fscanf(erch,"%d\n",&rec.habilitado);
+		       if(rec.habilitado==1){
+		       		if(rec.id_receta==opcion){
+		       			fprintf(arch,"%f",rec.precio);
+						fputc('*',arch);
+					}
+		    			
+		       }
+		    }
+		    fclose(arch);
+		}
+
+	
+		fprintf(arch,"%d",1);
+		fputc('\n',arch);
+		fclose(arch);
+		do{
+		printf("Desea seguir ordenando\n1.-Si\n2.-No\n");
+		}while(scanf("%d",&seguir)==0||(seguir!=1&&seguir!=2));
+		
+		}while(seguir==1);
+	}else{
+		printf("\n\tEntonces volvere más tarde..\n");
+	}
 }
 
 /// REGISTRO DE RECETA
@@ -749,10 +842,10 @@ void registro_receta(FILE *arch){
 	             			printf("ID: %d\nNombre: %s\n\n",temp.id_inventario,temp.nombre);
 	             		}
 						 fclose(irch);
-						 if(cont==0){
-				        	printf("\nYa se agregaron todos los elementos posibles a la receta\n");
-				    		cont=1;
-				        }
+						 //if(cont==0){
+				        //	printf("\nYa se agregaron todos los elementos posibles a la receta\n");
+				    	//	cont=2;
+				        //}
 	             	}else{
 	             		cont+=1;
 	             		printf("ID: %d\nNombre: %s\n\n",temp.id_inventario,temp.nombre);
@@ -765,46 +858,48 @@ void registro_receta(FILE *arch){
 	    		registro_inventario();
 	        }
 	        fclose(erch);
-	        do{
-	        correcto=2;
-	        printf("Elige un ingrediente del inventario por ID\n");
-	        fflush(stdin);
-	        scanf("%d",&ingrediente);
-		        erch = fopen("Inventario.txt","r+");
-		        while(!feof(erch)){
-		         fscanf(erch,"%d*",&temp.id_inventario);
-		         fscanf(erch,"%[^*]*",temp.nombre);
-		         fscanf(erch,"%f*",&temp.peso);
-		         fscanf(erch,"%f*",&temp.costo);
-		         fscanf(erch,"%f*",&temp.cantidad);
-		         fscanf(erch,"%d\n",&temp.habilitado);
-		             if(temp.habilitado==1){ 
-		             	if(ingrediente==temp.id_inventario){
-		             		correcto=1;
-		             	}
-		             }
-		        }
-		    if(correcto!=1){
-		    	printf("No existe este elemento en el inventario, por favor vuelve a intentar\n");
-		    }
-	    	}while(correcto!=1);
-	        
-	        do{
-	        printf("Cuantas porciones?\n");
-	        fflush(stdin);
-	        }while(scanf("%f",&porciones)==0);//Validar que el numeor de porciones elegidas sea menor al que hay en el inventario
-	        
-	        irch = fopen("Receta_Inventario.txt","a+");
-	        fprintf(irch,"%d*",rec.id_receta);
-	        fprintf(irch,"%d*",ingrediente);
-	        fprintf(irch,"%f*\n",porciones);
-	        fclose(irch);
-	        
-	        do{
-	        printf("Desea Agregar un nuevo Ingrediente\n1.-SI\n2.-NO\n\n");
-	        scanf("%d",&continuar);
-	    	}while(continuar!=1&&continuar!=2);	
-	    	
+	        if(cont!=2){
+		        
+		        do{
+		        correcto=2;
+		        printf("Elige un ingrediente del inventario por ID\n");
+		        fflush(stdin);
+		        scanf("%d",&ingrediente);
+			        erch = fopen("Inventario.txt","r+");
+			        while(!feof(erch)){
+			         fscanf(erch,"%d*",&temp.id_inventario);
+			         fscanf(erch,"%[^*]*",temp.nombre);
+			         fscanf(erch,"%f*",&temp.peso);
+			         fscanf(erch,"%f*",&temp.costo);
+			         fscanf(erch,"%f*",&temp.cantidad);
+			         fscanf(erch,"%d\n",&temp.habilitado);
+			             if(temp.habilitado==1){ 
+			             	if(ingrediente==temp.id_inventario){
+			             		correcto=1;
+			             	}
+			             }
+			        }
+			    if(correcto!=1){
+			    	printf("No existe este elemento en el inventario, por favor vuelve a intentar\n");
+			    }
+		    	}while(correcto!=1);
+		        
+		        do{
+		        printf("Cuantas porciones?\n");
+		        fflush(stdin);
+		        }while(scanf("%f",&porciones)==0||porciones<=0);//Validar que el numeor de porciones elegidas sea menor al que hay en el inventario
+		        
+		        irch = fopen("Receta_Inventario.txt","a+");
+		        fprintf(irch,"%d*",rec.id_receta);
+		        fprintf(irch,"%d*",ingrediente);
+		        fprintf(irch,"%f\n",porciones);
+		        fclose(irch);
+		        
+		        do{
+		        printf("Desea Agregar un nuevo Ingrediente\n1.-SI\n2.-NO\n\n");
+		        scanf("%d",&continuar);
+		    	}while(continuar!=1&&continuar!=2);	
+	    	}
 	    }else{
 	    	printf("\nNo hay nada en el inventario\nprimero tiene que agregar algo\n");
 	    	registro_inventario();
@@ -815,7 +910,7 @@ void registro_receta(FILE *arch){
 	do{
     printf("Precio : ");
     fflush(stdin);
-    }while(scanf("%f",&rec.precio)==0);
+    }while(scanf("%f",&rec.precio)==0||rec.precio<=0);
     
     fprintf(arch,"%f*",rec.precio);
 
@@ -924,22 +1019,15 @@ void ver_receta(FILE *arch){
 	       fscanf(arch,"%d\n",&rec.habilitado);
 	       if(rec.habilitado==1){
 	       		cont+=1;
-	    		printf("%d %s %s %f %d\n\t",rec.id_receta,rec.nombre,rec.descripcion,rec.precio,rec.habilitado);
+	    		printf("\tID:%d\n\tNombre del Platillo:%s\n\tDescripcion:%s\n\tPrecio:%g\n\t",rec.id_receta,rec.nombre,rec.descripcion,rec.precio);
 	       }
 	    }
 	    fclose(arch);
 	    if(cont==0){
-    		printf("\tUpps! No hay recetas!\n");
-    		do{
-    		
-				printf("\n\t1.-Agregar Nueva Receta\n\t2.-Salir\n\t");
-	    		scanf("%d",&agregar);
-	    		if(agregar==1){
-	    			registro_receta(&(*arch));
-	    		}
-	    		if(agregar!=1&&agregar!=2)
-	    			printf("No existe esta opcion, vuelve a elegir\n");
-    		}while(agregar!=1&&agregar!=2);
+    		printf("\tUpps! No hay recetas!\n\tEs necesario agregar nuevas recetas\n");
+    		system("pause");
+	    	registro_receta(&(*arch));
+	    	
     	}
 	}else{
 		printf("\tNo existe este archivo\nprimero  tienes que registrar a alguna receta\n");
@@ -993,7 +1081,7 @@ void ver_orden(FILE *arch){
 	    }
 	    fclose(arch);
 	    if(cont==0){
-    		printf("\tUpps! No hay recetas!\n");
+    		printf("\tUpps! No hay ordenes!\n");
     	}
 	}else{
 		printf("\tNo existe el archivo, primero  tienes que registrar a alguna orden\n");
@@ -1805,6 +1893,7 @@ void menu_principal_emp(FILE *arch,  int * sesion){
                                       break;
                                  case 4:
                                       printf("\n\t**Dar de Baja Receta**\n\t");
+                                      baja_recetas(arch);
                                       break;
                                  default:
                                       printf("\n\tNo existe esa opcion.\n\t");
@@ -1946,13 +2035,9 @@ void inicio_sesion(FILE *arch, FILE *erch, int * sesion){
 						printf("Ingresa tu contrase%ca: ",164);
 	                	fflush(stdin);
 	                	gets(passemp);
-	                	}while(verificar(passemp)!=1);
+	                	}while(verificar_direccion(passemp)!=1);
 	                	
-	                	if(erch==NULL){
-	                    	printf("Error! \n");
-	                    	system("pause");
-	                    	inicio_sesion(arch,erch,&(*sesion)); //si el archivo esta vacio regresa a la funcion inicio_sesion
-	                	}else{    		
+						while(!feof(erch)){
 							fscanf(erch,"%d*",&temporalDos.id_empleado);
 					        fscanf(erch,"%[^*]*",temporalDos.nombre);
 					        fscanf(erch,"%[^*]*",temporalDos.apellido_p);
@@ -1969,10 +2054,10 @@ void inicio_sesion(FILE *arch, FILE *erch, int * sesion){
 							fscanf(erch,"%[^*]*",&temporalDos.password);
 					        fscanf(erch,"%d\n",&temporalDos.habilitado);
 	                	}
-	                	if((strcmp(usuarioemp,emp)!=0)||(strcmp(passemp,temporalDos.password)!=0)){
+	                	if((strcmp(usuarioemp,temporalDos.usuario)!=0)||(strcmp(passemp,temporalDos.password)!=0)){
 	                    	printf("Usuario y/o Contrasena Incorrectos\n\n");
 	                	}	
-	        		}while((strcmp(usuarioemp,emp)!=0)||(strcmp(passemp,pswe)!=0));
+	        		}while((strcmp(usuarioemp,temporalDos.usuario)!=0)||(strcmp(passemp,temporalDos.password)!=0));
 	        			printf("Bienvenido!!\n");
 	        		 menu_principal_emp(arch,&(*sesion));	
 	     		}
