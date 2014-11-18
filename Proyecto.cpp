@@ -912,7 +912,7 @@ void ver_orden(FILE *arch){
     		printf("\tUpps! No hay recetas!\n");
     	}
 	}else{
-		printf("\tNo existe este archivo, primero  tienes que registrar a alguna orden\n");
+		printf("\tNo existe el archivo, primero  tienes que registrar a alguna orden\n");
 	}
 }
 //******MODIFICAR***///
@@ -923,6 +923,7 @@ void modificar_empleado(FILE *arch){
 	empleado emp,temporalDos,temporalTres;
 	int opcion,resultado,correcto=0;
 	char cadena[30];
+	if(arch = fopen("Empleados.txt","r+")){
 	printf("Empleados\n");
 	ver_empleado(arch);
 	
@@ -1145,6 +1146,9 @@ void modificar_empleado(FILE *arch){
 	
 	fclose(arch);
 	fclose(erch);
+	}else{
+		printf("\tNo existe el archivo, primero  tienes que registrar a algun empleado\n");
+	}
 }
 
 
@@ -1154,6 +1158,7 @@ void modificar_receta(FILE *arch){
 	receta emp,temporal;
 	int opcion,ingrediente;
 	float porciones;
+	if(arch = fopen("Receta.txt","r+")){
 	printf("Recetas\n");
 	ver_receta(arch);
 	printf("Elige mediante ID:");
@@ -1229,12 +1234,16 @@ void modificar_receta(FILE *arch){
 	
 	fclose(arch);
 	fclose(erch);
+	}else{
+		printf("\tNo existe el archivo, primero  tienes que registrar alguna receta\n");
+	}
 }
 //MODIFICAR ORDEN
 void modificar_orden(FILE *arch){
 	FILE *erch;
 	orden ord,temporal;
 	int opcion;
+	if(arch = fopen("Orden.txt","r+")){
 	printf("Ordenes\n");
 	ver_orden(arch);
 	printf("Elige mediante ID:");
@@ -1308,12 +1317,16 @@ void modificar_orden(FILE *arch){
 	
 	fclose(arch);
 	fclose(erch);
+	}else{
+		printf("\tNo existe el archivo, primero  tienes que registrar alguna orden\n");
+	}
 }
 //MODIFICAR INVENTARIO
 void modificar_inventario(FILE *arch){
 	FILE *erch;
 	inventario inv,temporal;
 	int opcion;
+	if(arch = fopen("Inventario.txt","r+")){
 	printf("Inventario\n");
 	ver_inventario(arch);
 	printf("Elige mediante ID:");
@@ -1370,12 +1383,16 @@ void modificar_inventario(FILE *arch){
 	
 	fclose(arch);
 	fclose(erch);
+	}else{
+		printf("\tNo existe el archivo, primero  tienes que registrar algun producto\n");
+	}
 }
 //MODIFICAR AREA
 void modificar_area(FILE *arch){
 	FILE *erch;
 	area ar,temporal;
 	int opcion;
+	if(arch = fopen("Area.txt","r+")){
 	printf("Areas\n");
 	ver_area(arch);
 	printf("Elige mediante ID:");
@@ -1424,6 +1441,9 @@ void modificar_area(FILE *arch){
 	
 	fclose(arch);
 	fclose(erch);
+	}else{
+		printf("\tNo existe el archivo, primero  tienes que registrar alguna area\n");
+	}
 }
 
 //MENU PRINCIPAL
