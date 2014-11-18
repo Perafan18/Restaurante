@@ -194,12 +194,13 @@ void baja_empleados(FILE *arch){
 	        fscanf(arch,"%[^*]*",temporalDos.telefono);
 	        fscanf(arch,"%d*",&temporalDos.id_area);
 	        fscanf(arch,"%[^*]*",temporalDos.puesto);
-	        fscanf(arch,"%[^*]*",&temporalDos.password);
+	        fscanf(arch,"%[^*]*",temporalDos.usuario);
+	        fscanf(arch,"%[^*]*",temporalDos.password);
 	        fscanf(arch,"%d\n",&temporalDos.habilitado);
 			if(temporalDos.id_empleado==id){
-				fprintf(erch,"%d*%s*%s*%s*%d*%d*%d*%s*%s*%s*%d*%s*%s*%d\n",temporalDos.id_empleado,temporalDos.nombre,temporalDos.apellido_m,temporalDos.apellido_p,temporalDos.day,temporalDos.month,temporalDos.year,temporalDos.sexo,temporalDos.direccion,temporalDos.telefono,temporalDos.id_area,temporalDos.puesto, temporalDos.password,0);
+				fprintf(erch,"%d*%s*%s*%s*%d*%d*%d*%s*%s*%s*%d*%s*%s*%d\n",temporalDos.id_empleado,temporalDos.nombre,temporalDos.apellido_m,temporalDos.apellido_p,temporalDos.day,temporalDos.month,temporalDos.year,temporalDos.sexo,temporalDos.direccion,temporalDos.telefono,temporalDos.id_area,temporalDos.puesto, temporalDos.usuario,temporalDos.password,0);
 			}else{
-	        	fprintf(erch,"%d*%s*%s*%s*%d*%d*%d*%s*%s*%s*%d*%s*%s*%d\n",temporalDos.id_empleado,temporalDos.nombre,temporalDos.apellido_m,temporalDos.apellido_p,temporalDos.day,temporalDos.month,temporalDos.year,temporalDos.sexo,temporalDos.direccion,temporalDos.telefono,temporalDos.id_area,temporalDos.puesto, temporalDos.password,temporalDos.habilitado);
+	        	fprintf(erch,"%d*%s*%s*%s*%d*%d*%d*%s*%s*%s*%d*%s*%s*%d\n",temporalDos.id_empleado,temporalDos.nombre,temporalDos.apellido_m,temporalDos.apellido_p,temporalDos.day,temporalDos.month,temporalDos.year,temporalDos.sexo,temporalDos.direccion,temporalDos.telefono,temporalDos.id_area,temporalDos.puesto, temporalDos.usuario,temporalDos.password,temporalDos.habilitado);
 	        }
 		}
 		fclose(arch);
@@ -220,9 +221,10 @@ void baja_empleados(FILE *arch){
 		        fscanf(erch,"%[^*]*",temporalDos.telefono);
 		        fscanf(erch,"%d*",&temporalDos.id_area);
 		        fscanf(erch,"%[^*]*",&temporalDos.puesto);
-		        fscanf(erch,"%[^*]*",&temporalDos.password);
+	        	fscanf(erch,"%[^*]*",temporalDos.usuario);
+	        	fscanf(erch,"%[^*]*",temporalDos.password);
 		        fscanf(erch,"%d\n",&temporalDos.habilitado);
-		        	fprintf(arch,"%d*%s*%s*%s*%d*%d*%d*%s*%s*%s*%d*%s*%s*%d\n",temporalDos.id_empleado,temporalDos.nombre,temporalDos.apellido_m,temporalDos.apellido_p,temporalDos.day,temporalDos.month,temporalDos.year,temporalDos.sexo,temporalDos.direccion,temporalDos.telefono,temporalDos.id_area,temporalDos.puesto, temporalDos.password,temporalDos.habilitado);
+		        	fprintf(arch,"%d*%s*%s*%s*%d*%d*%d*%s*%s*%s*%d*%s*%s*%d\n",temporalDos.id_empleado,temporalDos.nombre,temporalDos.apellido_m,temporalDos.apellido_p,temporalDos.day,temporalDos.month,temporalDos.year,temporalDos.sexo,temporalDos.direccion,temporalDos.telefono,temporalDos.id_area,temporalDos.puesto,temporalDos.usuario, temporalDos.password,temporalDos.habilitado);
 		    
 			}
 		}
@@ -1062,8 +1064,16 @@ void ver_inventario(FILE *arch){
 }
 //VER_ORDEN
 void ver_orden(FILE *arch){
-    orden ord;
+    FILE *erch;
+	orden ord;
+    detalle_orden temporal;
     int cont;
+    if(erch = fopen("Orden_detalle.txt","r+")){
+    	while(!feof(erch)){
+    		
+    	}
+    }
+    
     if(arch = fopen("Orden.txt","r+")){
 	    while(!feof(arch)){
 	    	fscanf(arch,"%d*",&ord.id_orden);
@@ -1085,6 +1095,7 @@ void ver_orden(FILE *arch){
     	}
 	}else{
 		printf("\tNo existe el archivo, primero  tienes que registrar a alguna orden\n");
+		registro_orden(&(*arch));
 	}
 }
 //******MODIFICAR***///
@@ -1245,7 +1256,7 @@ void modificar_empleado(FILE *arch){
 			        fscanf(irch,"%[^*]*",&temporalDos.password);
 			        fscanf(irch,"%d\n",&temporalDos.habilitado);
 			        if(temporalDos.habilitado==1){
-			        	if(temporalDos.usuario==emp.usuario){
+			        	if(strcmp(temporalDos.usuario,emp.usuario)==0){
 			        		correcto=2;
 			        	}
 			        }
@@ -1261,10 +1272,7 @@ void modificar_empleado(FILE *arch){
 			fflush(stdin);
 			gets(emp.password);
 		}while(verificar_direccion(emp.password)!=1);
-		do{
-	printf("Habilitado? 1.Si 0.No\n");
-	scanf("%d",&emp.habilitado);
-	}while(emp.habilitado!=1&&emp.habilitado!=0);
+
 	if(arch = fopen("Empleados.txt","r+")){
 		erch = fopen("EmpleadosTemp.txt","w");
 		while(!feof(arch)){
@@ -1284,7 +1292,7 @@ void modificar_empleado(FILE *arch){
 	        fscanf(arch,"%[^*]*",&temporalDos.password);
 	        fscanf(arch,"%d\n",&temporalDos.habilitado);
 			if(opcion==temporalDos.id_empleado){
-	        	fprintf(erch,"%d*%s*%s*%s*%d*%d*%d*%s*%s*%s*%d*%s*%s*%s*%d\n",opcion,emp.nombre,emp.apellido_m,emp.apellido_p,emp.day,emp.month,emp.year,emp.sexo,emp.direccion,emp.telefono,emp.id_area,emp.puesto,emp.usuario,emp.password,emp.habilitado);
+	        	fprintf(erch,"%d*%s*%s*%s*%d*%d*%d*%s*%s*%s*%d*%s*%s*%s*%d\n",opcion,emp.nombre,emp.apellido_m,emp.apellido_p,emp.day,emp.month,emp.year,emp.sexo,emp.direccion,emp.telefono,emp.id_area,emp.puesto,emp.usuario,emp.password,1);
 	        }else{
 	        	fprintf(erch,"%d*%s*%s*%s*%d*%d*%d*%s*%s*%s*%d*%s*%s*%s*%d\n",temporalDos.id_empleado,temporalDos.nombre,temporalDos.apellido_m,temporalDos.apellido_p,temporalDos.day,temporalDos.month,temporalDos.year,temporalDos.sexo,temporalDos.direccion,temporalDos.telefono,temporalDos.id_area,temporalDos.puesto,temporalDos.usuario,temporalDos.password,temporalDos.habilitado);
 	        }
