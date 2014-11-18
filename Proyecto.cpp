@@ -672,7 +672,7 @@ void registro_orden(FILE *arch){
 void registro_receta(FILE *arch){
 	receta rec, tempo;
 	FILE *erch,*irch;
-	int continuar,ingrediente;
+	int continuar,ingrediente,correcto=0,cont=0,id,correctoDos=0;
     float porciones;
    inventario temp;
 
@@ -688,54 +688,120 @@ void registro_receta(FILE *arch){
     }
     rec.id_receta+=1;
     fprintf(arch,"%d*",rec.id_receta);
+    do{
     printf("Nombre de la receta: ");
     fflush(stdin);
     gets(rec.nombre);
-    fputs(rec.nombre, arch);
+	}while(verificar(rec.nombre)!=1);
+	fputs(rec.nombre, arch);
     fputc('*',arch);
+    
+    do{
     printf("Descripcion : ");
     fflush(stdin);
     gets(rec.descripcion);
+	}while(verificar_direccion(rec.descripcion)!=1);
+	
     fputs(rec.descripcion, arch);
     fputc('*',arch);
+
     do{
     printf("Elige un ingrediente del inventario por ID\n");
-    erch = fopen("Inventario.txt","r+");
-        while(!feof(erch)){
-         fscanf(erch,"%d*",&temp.id_inventario);
-         fscanf(erch,"%[^*]*",temp.nombre);
-         fscanf(erch,"%f*",&temp.peso);
-         fscanf(erch,"%f*",&temp.costo);
-         fscanf(erch,"%f*",&temp.cantidad);
-         fscanf(erch,"%d\n",&temp.habilitado);
-             if(temp.habilitado==0){ 
-             printf("ID: %d\nNombre: %s\n\n",temp.id_inventario,temp.nombre);
-             }
-        }
-        scanf("%d",&ingrediente);
-        fflush(stdin);
-        printf("Cuantas porciones?\n");
-        fflush(stdin);
-        scanf("%f",&porciones); //Validar que el numeor de porciones elegidas sea menor al que hay en el inventario
-        
-        irch = fopen("Receta_Inventario.txt","a+");
-        fprintf(irch,"%d*",rec.id_receta);
-        fprintf(irch,"%d*",ingrediente);
-        fprintf(irch,"%f*\n",porciones);
-        fclose(irch);
-        
-        printf("Desea Agregar un nuevo Ingrediente\n1.-SI\n2.-NO\n\n");
-        scanf("%d",&continuar);
+	    if(erch = fopen("Inventario.txt","r+")){
+	        while(!feof(erch)){
+	        	printf("Hola1");
+	         fscanf(erch,"%d*",&temp.id_inventario);
+	         fscanf(erch,"%[^*]*",temp.nombre);
+	         fscanf(erch,"%f*",&temp.peso);
+	         fscanf(erch,"%f*",&temp.costo);
+	         fscanf(erch,"%f*",&temp.cantidad);
+	         fscanf(erch,"%d\n",&temp.habilitado);
+	             if(temp.habilitado==1){
+	             	printf("Hola2");
+	             	correctoDos=1;
+	             	if(irch = fopen("Receta_Inventario.txt","r+")){
+	             		printf("Hola3");
+	             		while(!feof(irch)){
+	             			fscanf(irch,"%d*",&id);
+					        fscanf(irch,"%d*",&ingrediente);
+					        fscanf(irch,"%f*\n",&porciones);
+					        if(id==temp.id_inventario){
+					        	correctoDos=0;
+					        }
+	             		}
+	             		if(correctoDos==1){
+	             			cont+=1;
+	             			printf("ID: %d\nNombre: %s\n\n",temp.id_inventario,temp.nombre);
+	             		}
+						 fclose(irch);
+						 if(cont==0){
+				        	printf("\nYa se agregaron todos los elementos posibles a la receta\n");
+				    		cont=1;
+				        }
+	             	}else{
+	             		cont+=1;
+	             		printf("ID: %d\nNombre: %s\n\n",temp.id_inventario,temp.nombre);
+	             	}
+
+	             }
+	        }
+	        if(cont==0){
+	        	printf("\nNo hay nada en el inventario\nprimero tiene que agregar algo\n");
+	    		registro_inventario();
+	        }
+	        fclose(erch);
+	        do{
+	        correcto=2;
+	        fflush(stdin);
+	        scanf("%d",&ingrediente);
+		        erch = fopen("Inventario.txt","r+");
+		        while(!feof(erch)){
+		         fscanf(erch,"%d*",&temp.id_inventario);
+		         fscanf(erch,"%[^*]*",temp.nombre);
+		         fscanf(erch,"%f*",&temp.peso);
+		         fscanf(erch,"%f*",&temp.costo);
+		         fscanf(erch,"%f*",&temp.cantidad);
+		         fscanf(erch,"%d\n",&temp.habilitado);
+		             if(temp.habilitado==1){ 
+		             	if(ingrediente==temp.id_inventario){
+		             		correcto=1;
+		             	}
+		             }
+		        }
+		    if(correcto!=1){
+		    	printf("No existe este elemento en el inventario, por favor vuelve a intentar\n");
+		    }
+	    	}while(correcto!=1);
+	        
+	        do{
+	        printf("Cuantas porciones?\n");
+	        fflush(stdin);
+	        }while(scanf("%f",&porciones)==0);//Validar que el numeor de porciones elegidas sea menor al que hay en el inventario
+	        
+	        irch = fopen("Receta_Inventario.txt","a+");
+	        fprintf(irch,"%d*",rec.id_receta);
+	        fprintf(irch,"%d*",ingrediente);
+	        fprintf(irch,"%f*\n",porciones);
+	        fclose(irch);
+	        
+	        printf("Desea Agregar un nuevo Ingrediente\n1.-SI\n2.-NO\n\n");
+	        scanf("%d",&continuar);
+	    }else{
+	    	printf("\nNo hay nada en el inventario\nprimero tiene que agregar algo\n");
+	    	registro_inventario();
+	    	continuar=1;
+	    }
     }while(continuar==1);
 	
+	do{
     printf("Precio : ");
     fflush(stdin);
-    scanf("%f",&rec.precio);
+    }while(scanf("%f",&rec.precio)==0);
+    
     fprintf(arch,"%f*",rec.precio);
-    printf("Habilitado? 1.- Si 2.- No ");
-    fflush(stdin);
-    scanf("%d",&rec.habilitado);
-    fprintf(arch,"%d",rec.habilitado);
+
+
+    fprintf(arch,"%d",1);//Habilitado
     fputc('\n',arch);
     
     
@@ -746,7 +812,6 @@ void registro_receta(FILE *arch){
         fprintf(arch,"%f ",rec.precio);
         fprintf(arch,"%d\n",rec.habilitado);*/
     fclose(arch);
-
 }
 /////////////////////////////****************************VER********************************//////////////////////////////////
 //VER EMPLEADO//
