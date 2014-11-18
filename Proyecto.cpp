@@ -70,7 +70,7 @@ void ver_orden(FILE *arch);
 void ver_inventario(FILE *arch);
 void ver_receta(FILE *arch);
 void ver_area(FILE *arch);
-void ver_empleado(FILE *arch);
+int ver_empleado(FILE *arch);
 void registro_receta(FILE *arch);
 void registro_orden(FILE *arch);
 void registro_inventario();
@@ -181,10 +181,10 @@ int verificar_numero(int numero){
 
 void baja_empleados(FILE *arch){
 	FILE *erch;
-	int id;
+	int id, ver;
 	empleado temporalDos;
 	if(arch = fopen("Empleados.txt","r+")){
-		ver_empleado(&(*arch));
+		ver= ver_empleado(&(*arch));
 		printf("Dame el ID del usuario\n");
 		scanf("%d",&id);
 		
@@ -1005,12 +1005,12 @@ void registro_receta(FILE *arch){
 }
 /////////////////////////////****************************VER********************************//////////////////////////////////
 //VER EMPLEADO//
-void ver_empleado(FILE *arch){
+int ver_empleado(FILE *arch){
 	system("cls");
     empleado temporal;
     area temp;
     char area[30];
-    int cont=0;
+    int cont=0, vacio=0;
     FILE *erch;
     
     if(arch = fopen("Empleados.txt","r+")){
@@ -1051,12 +1051,14 @@ void ver_empleado(FILE *arch){
     fclose(erch);
     if(cont==0){
     	printf("\tUpps! No hay empleados!\n");
+    	vacio=1;
     }
 	}else{
 		printf("\tNo existe este archivo, primero  tienes que registrar a algun empleado\n");
 		system("pause");
 		registro(&(*arch));
 	}
+	return vacio;
 }
 //VER AREA
 void ver_area(FILE *arch){
@@ -1191,12 +1193,14 @@ void modificar_empleado(FILE *arch){
 	area temporal;
 	FILE *erch,*irch;
 	empleado emp,temporalDos,temporalTres;
-	int opcion,resultado,correcto=0;
+	int opcion,resultado,correcto=0, ver;
 	char cadena[30];
 	if(arch = fopen("Empleados.txt","r+")){
 	printf("Empleados\n");
-	ver_empleado(arch);
-	
+	ver= ver_empleado(arch);
+
+	if(ver == 0 ){
+		
 	printf("Elige mediante ID:");
 	scanf("%d",&opcion);
 	
@@ -1307,7 +1311,7 @@ void modificar_empleado(FILE *arch){
 				}
 			}
 			if(correcto!=1){
-				printf("Area no valida,por favor vuele a elegir\n\n");
+				printf("Area no valida,por favor vuelve a elegir\n\n");
 			}
 		}while(correcto!=1);
 		correcto=0;
@@ -1415,6 +1419,10 @@ void modificar_empleado(FILE *arch){
 	fclose(erch);
 	}else{
 		printf("\tNo existe el archivo, primero  tienes que registrar a algun empleado\n");
+	}
+	
+	}else{  //primer if
+		printf("\n\tNo hay empleados que modificar \n\t");
 	}
 }
 
@@ -1715,7 +1723,7 @@ void modificar_area(FILE *arch){
 
 //MENU PRINCIPAL
 void menu_principal(FILE *arch,  int * sesion){
-     int op, op2, continuar=2,cont;
+     int op, op2, continuar=2,cont, ver;
      
   do{
   	system("cls");
@@ -1738,7 +1746,7 @@ void menu_principal(FILE *arch,  int * sesion){
                                       break;
                                  case 2:
                                      printf("\n\t**Ver Empleados**\n\t");
-                                        ver_empleado(arch);
+                                        ver= ver_empleado(arch);
                                      break;
                                  case 3:
                                  	if((*sesion) !=1){
@@ -1954,7 +1962,7 @@ void menu_principal(FILE *arch,  int * sesion){
   system("pause");
 }
 void menu_principal_emp(FILE *arch,  int * sesion){
-     int op, op2, continuar;
+     int op, op2, continuar, ver;
   do{
      printf("\n\t**Menu Principal**\n\t");
      printf("1. Empleado\n\t2. Receta\n\t3. Orden\n\t4. Inventario\n\t5. Area\n\t6. Salir\n\t");//Opciones
@@ -1967,7 +1975,7 @@ void menu_principal_emp(FILE *arch,  int * sesion){
                      switch(op2){
                                  case 1:
                                      printf("\n\t**Ver Empleados**\n\t");
-                                        ver_empleado(arch);
+                                        ver= ver_empleado(arch);
                                      break;
                                  default:
                                       printf("\n\tNo existe esa opcion.\n\t");
